@@ -9,7 +9,10 @@ color: negro
 sexo: (macho o hembra)
 peso al nacer(kg) : 2,5--
 peso actual(kg) : 66 , cada dos meses se hace control 
-raza: anglonubiana
+raza: Alpina ,
+Anglonubiana,
+Saanen ,
+Cruces,  se deja para registrar mas razas 
 numero de partos: 0 
 
 {exploración física 
