@@ -30,13 +30,9 @@
                     <div class="card">
                         <h3>Perfil</h3>
                         <p>Actualiza tu información personal</p>
-                        <button class="btn btn-primary">Editar Perfil</button>
-                    </div>
-                    
-                    <div class="card">
-                        <h3>Configuración</h3>
-                        <p>Ajusta las configuraciones de tu cuenta</p>
-                        <button class="btn btn-primary">Configurar</button>
+                          <a href="<?php echo BASE_URL; ?>/profile/edit" class="btn btn-primary">
+                        📝 Editar Perfil
+                    </a>
                     </div>
                 </div>
             </div>
