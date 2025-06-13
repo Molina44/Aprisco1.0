@@ -2,6 +2,7 @@
 // public/index.php
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../src/controllers/AuthController.php';
+require_once __DIR__ . '/../src/controllers/UserController.php';
 
 // Obtener URI y método HTTP
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -10,6 +11,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Router simple
 $authController = new AuthController();
+$userController = new UserController();
 
 switch ($uri) {
     case '':
@@ -43,6 +45,26 @@ switch ($uri) {
 
     case '/dashboard':
         $authController->dashboard();
+        break;
+
+    case '/profile':
+        $userController->showProfile();
+        break;
+
+    case '/profile/edit':
+        if ($method === 'GET') {
+            $userController->showEditProfile();
+        } elseif ($method === 'POST') {
+            $userController->updateProfile();
+        }
+        break;
+
+    case '/profile/password':
+        if ($method === 'GET') {
+            $userController->showChangePassword();
+        } elseif ($method === 'POST') {
+            $userController->changePassword();
+        }
         break;
 
     default:
