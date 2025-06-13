@@ -110,10 +110,39 @@ class User {
             $this->fecha_registro = $row['fecha_registro'];
             $this->fecha_ultimo_acceso = $row['fecha_ultimo_acceso'];
             $this->activo = $row['activo'];
+
+            // Asegurar que password esté limpio
+            $this->password = null;
+
             return true;
         }
         return false;
     }
+    // Método específico - CON contraseña (solo para validaciones)
+    public function getUserWithPasswordById($id) {
+        $query = "SELECT id, nombre, email, telefono, password, fecha_registro, fecha_ultimo_acceso, activo 
+                  FROM " . $this->table_name . " 
+                  WHERE id = :id LIMIT 1";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->id = $row['id'];
+            $this->nombre = $row['nombre'];
+            $this->email = $row['email'];
+            $this->telefono = $row['telefono'];
+            $this->password = $row['password']; // Solo aquí se carga la contraseña
+            $this->fecha_registro = $row['fecha_registro'];
+            $this->fecha_ultimo_acceso = $row['fecha_ultimo_acceso'];
+            $this->activo = $row['activo'];
+            return true;
+        }
+        return false;
+    }
+
 
     // Actualizar información del usuario
     public function update() {
@@ -226,13 +255,19 @@ class User {
     }
 
     // Validar cambio de contraseña
-    public function validatePasswordChange($current_password, $new_password, $confirm_password) {
+  public function validatePasswordChange($current_password, $new_password, $confirm_password) {
         $errors = [];
+
+        // Verificar que la contraseña esté cargada
+        if (empty($this->password)) {
+            $errors[] = "Error: Datos de autenticación no disponibles. Intenta nuevamente.";
+            return $errors;
+        }
 
         // Verificar contraseña actual
         if (empty($current_password)) {
             $errors[] = "La contraseña actual es requerida";
-        } elseif (!password_verify($current_password, $this->password)) {
+        } elseif (!password_verify(trim($current_password), $this->password)) {
             $errors[] = "La contraseña actual es incorrecta";
         }
 

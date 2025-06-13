@@ -97,7 +97,7 @@ class UserController {
     }
 
     // Procesar cambio de contraseña
-    public function changePassword() {
+     public function changePassword() {
         if (!$this->isLoggedIn()) {
             header("Location: " . BASE_URL . "/login");
             exit();
@@ -116,7 +116,8 @@ class UserController {
         }
 
         $user = new User();
-        if (!$user->getUserById($_SESSION['user_id'])) {
+        // USAR EL MÉTODO CORREGIDO
+        if (!$user->getUserWithPasswordById($_SESSION['user_id'])) {
             $_SESSION['error'] = "Usuario no encontrado";
             header("Location: " . BASE_URL . "/dashboard");
             exit();
