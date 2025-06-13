@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = 'localhost';
-    private $db_name = 'aprisco1.0';
+    private $db_name = 'aprisco1.1';
     private $username = 'root';
     private $password = '';
     private $conn = null;

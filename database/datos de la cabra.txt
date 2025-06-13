@@ -1,0 +1,58 @@
+datos de la cabra 
+Nombre: Sara
+pdf-registro :
+madre: jara 
+Padre: eximer 
+fecha de nacimiento: 13/10/2022
+Edad(meses): 27 
+color: negro 
+sexo: (macho o hembra)
+peso al nacer(kg) : 2,5--
+peso actual(kg) : 66 , cada dos meses se hace control 
+raza: anglonubiana
+numero de partos: 0 
+
+{exploración física 
+condición especial :(vacia, preñada, lactante, nacimiento)
+c. corporal: (1,2,3,4,5)  se realiza cada 2 meses
+genitales: normal o anomalia 
+ubre: normal o anomalia 
+darck score (1,2,3,4,5)
+famacha : (1,2,3,4,5)
+}
+  
+{Dentadura
+sin muda(si , no )
+{dientes mudados
+pinzas: selección entre 1 y 2 
+Primeros medios: 2
+Segundos medios: 2
+Extremos. 2
+} 
+Desgaste(si, no)
+perdidas dentales(si, no)
+}
+orejas (normal, anormal)
+mucosas(normal, anormal)
+
+{aplomos
+cascos(normal , anormal) 
+e.interdigital(normal , anormal) 
+}
+
+observaciones: se encuentra sana en el momento de la entrega 
+fecha de compra: 27/01/2025
+nombre-comprador : 
+cedula-comprador : 
+direccion-comprador :
+telefono-comprador :
+
+-------------------------------
+pajilla--pdf 
+ubre de la madre--foto 
+
+-------------------------------
+historial en el pdf 
+-------------------------------
+control reproductivo
+-------------------------------
