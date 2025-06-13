@@ -116,29 +116,42 @@
                 // Check length
                 if (newPassValue.length >= minLength) {
                     lengthReq.classList.remove('requirement');
+                    lengthReq.classList.add('requirement-met');
                     lengthReq.querySelector('.req-icon').textContent = '✅';
                 } else {
                     lengthReq.classList.add('requirement');
+                    lengthReq.classList.remove('requirement-met');
                     lengthReq.querySelector('.req-icon').textContent = '❌';
-                        }
-        
-                        // Check match
-                        if (newPassValue && newPassValue === confirmPassValue) {
-                            matchReq.classList.remove('requirement');
-                            matchReq.querySelector('.req-icon').textContent = '✅';
-                        } else {
-                            matchReq.classList.add('requirement');
-                            matchReq.querySelector('.req-icon').textContent = '❌';
-                        }
-        
-                        // Enable/disable submit button
-                        submitBtn.disabled = !(newPassValue.length >= minLength && newPassValue === confirmPassValue);
-                    }
-        
-                    newPassword.addEventListener('input', checkRequirements);
-                    confirmPassword.addEventListener('input', checkRequirements);
-        
-                    // Initial check
-                    checkRequirements();
-                });
+                }
+
+                // Check match
+                if (newPassValue && newPassValue === confirmPassValue) {
+                    matchReq.classList.remove('requirement');
+                    matchReq.classList.add('requirement-met');
+                    matchReq.querySelector('.req-icon').textContent = '✅';
+                } else {
+                    matchReq.classList.add('requirement');
+                    matchReq.classList.remove('requirement-met');
+                    matchReq.querySelector('.req-icon').textContent = '❌';
+                }
+
+                // Enable/disable submit button
+                const isValid = newPassValue.length >= minLength && newPassValue === confirmPassValue;
+                submitBtn.disabled = !isValid;
+                
+                if (isValid) {
+                    submitBtn.classList.remove('btn-disabled');
+                } else {
+                    submitBtn.classList.add('btn-disabled');
+                }
+            }
+
+            newPassword.addEventListener('input', checkRequirements);
+            confirmPassword.addEventListener('input', checkRequirements);
+
+            // Initial check
+            checkRequirements();
+        });
     </script>
+</body>
+</html>
