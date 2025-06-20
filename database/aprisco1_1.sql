@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-06-2025 a las 23:03:49
+-- Tiempo de generación: 20-06-2025 a las 20:41:32
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -40,7 +40,8 @@ CREATE TABLE `cabras` (
   `estado` enum('ACTIVA','INACTIVA') DEFAULT 'ACTIVA',
   `fecha_registro` date DEFAULT curdate(),
   `creado_por` int(11) DEFAULT NULL,
-  `modificado_por` int(11) DEFAULT NULL
+  `modificado_por` int(11) DEFAULT NULL,
+  `foto` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -55,16 +56,29 @@ CREATE TABLE `controles_sanitarios` (
   `fecha_control` date NOT NULL,
   `peso_kg` decimal(5,2) DEFAULT NULL,
   `peso_nacer_kg` decimal(5,2) DEFAULT NULL,
-  `condicion_especial` varchar(100) DEFAULT NULL,
+  `condicion_especial` enum('vacia','preñada','lactante','nacimiento') DEFAULT NULL,
   `fama_hoja` tinyint(4) DEFAULT NULL CHECK (`fama_hoja` between 1 and 5),
-  `dentadura` varchar(50) DEFAULT NULL,
-  `orejas` varchar(50) DEFAULT NULL,
-  `mucosas` varchar(50) DEFAULT NULL,
-  `aplomos` varchar(50) DEFAULT NULL,
+  `orejas` enum('normal','anormal') DEFAULT NULL,
+  `mucosas` enum('normal','anormal') DEFAULT NULL,
   `vitaminacion` varchar(100) DEFAULT NULL,
   `purga` varchar(100) DEFAULT NULL,
   `observaciones` text DEFAULT NULL,
-  `registrado_por` int(11) DEFAULT NULL
+  `registrado_por` int(11) DEFAULT NULL,
+  `c_corporal` enum('1','2','3','4','5') DEFAULT NULL,
+  `genitales` enum('normal','anormal') DEFAULT NULL,
+  `ubre` enum('normal','anormal') DEFAULT NULL,
+  `foto_ubre` varchar(100) DEFAULT NULL,
+  `drack_score` enum('1','2','3','4','5') DEFAULT NULL,
+  `famacha` enum('1','2','3','4','5') DEFAULT NULL,
+  `sin_muda` enum('si','no') DEFAULT NULL,
+  `pinzas` enum('1','2') DEFAULT NULL,
+  `primeros_medios` enum('1','2') DEFAULT NULL,
+  `segundos_medios` enum('1','2') DEFAULT NULL,
+  `extremos` enum('1','2') DEFAULT NULL,
+  `desgaste` enum('si','no') DEFAULT NULL,
+  `perdidas_dentales` enum('si','no') DEFAULT NULL,
+  `cascos` enum('normal','anormal') DEFAULT NULL,
+  `e_interdigital` enum('normal','anormal') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
