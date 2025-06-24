@@ -4,8 +4,17 @@ require_once __DIR__ . '/../models/User.php';
 
 class UserController {
     
-    // Verificar si está logueado
+    // Verificar si está logueado (versión mejorada)
     private function isLoggedIn() {
+        $currentUrl = $_SERVER['REQUEST_URI'] ?? '';
+        $isLoginPage = strpos($currentUrl, '/login') !== false;
+        $isLogoutPage = strpos($currentUrl, '/logout') !== false;
+        
+        // Evitar redirecciones infinitas en páginas de autenticación
+        if ($isLoginPage || $isLogoutPage) {
+            return false;
+        }
+        
         return isset($_SESSION['user_id']) && 
                isset($_SESSION['login_time']) && 
                (time() - $_SESSION['login_time'] < SESSION_TIMEOUT);
@@ -14,15 +23,15 @@ class UserController {
     // Mostrar formulario de editar perfil
     public function showEditProfile() {
         if (!$this->isLoggedIn()) {
-            header("Location: " . BASE_URL . "/login");
-            exit();
+            $this->redirectToLogin();
+            return;
         }
 
         $user = new User();
         if (!$user->getUserById($_SESSION['user_id'])) {
             $_SESSION['error'] = "Usuario no encontrado";
-            header("Location: " . BASE_URL . "/dashboard");
-            exit();
+            $this->redirectToDashboard();
+            return;
         }
 
         include __DIR__ . '/../views/user/edit_profile.php';
@@ -31,27 +40,27 @@ class UserController {
     // Procesar actualización de perfil
     public function updateProfile() {
         if (!$this->isLoggedIn()) {
-            header("Location: " . BASE_URL . "/login");
-            exit();
+            $this->redirectToLogin();
+            return;
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: " . BASE_URL . "/profile/edit");
-            exit();
+            $this->redirectToProfileEdit();
+            return;
         }
 
         // Verificar token CSRF
-        if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+        if (!function_exists('verifyCSRFToken') || !verifyCSRFToken($_POST['csrf_token'] ?? '')) {
             $_SESSION['error'] = "Token de seguridad inválido";
-            header("Location: " . BASE_URL . "/profile/edit");
-            exit();
+            $this->redirectToProfileEdit();
+            return;
         }
 
         $user = new User();
         if (!$user->getUserById($_SESSION['user_id'])) {
             $_SESSION['error'] = "Usuario no encontrado";
-            header("Location: " . BASE_URL . "/dashboard");
-            exit();
+            $this->redirectToDashboard();
+            return;
         }
 
         // Actualizar datos
@@ -64,17 +73,13 @@ class UserController {
 
         if (empty($errors)) {
             if ($user->update()) {
-                // Actualizar datos de sesión si el email cambió
-                if ($_SESSION['user_email'] !== $user->email) {
-                    $_SESSION['user_email'] = $user->email;
-                }
-                if ($_SESSION['user_name'] !== $user->nombre) {
-                    $_SESSION['user_name'] = $user->nombre;
-                }
+                // Actualizar datos de sesión
+                $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_name'] = $user->nombre;
 
                 $_SESSION['success'] = "Perfil actualizado exitosamente";
-                header("Location: " . BASE_URL . "/profile/edit");
-                exit();
+                $this->redirectToProfileEdit();
+                return;
             } else {
                 $errors[] = "Error al actualizar el perfil. Intenta nuevamente.";
             }
@@ -82,15 +87,14 @@ class UserController {
 
         $_SESSION['errors'] = $errors;
         $_SESSION['form_data'] = $_POST;
-        header("Location: " . BASE_URL . "/profile/edit");
-        exit();
+        $this->redirectToProfileEdit();
     }
 
     // Mostrar formulario de cambiar contraseña
     public function showChangePassword() {
         if (!$this->isLoggedIn()) {
-            header("Location: " . BASE_URL . "/login");
-            exit();
+            $this->redirectToLogin();
+            return;
         }
 
         include __DIR__ . '/../views/user/change_password.php';
@@ -99,28 +103,27 @@ class UserController {
     // Procesar cambio de contraseña
      public function changePassword() {
         if (!$this->isLoggedIn()) {
-            header("Location: " . BASE_URL . "/login");
-            exit();
+            $this->redirectToLogin();
+            return;
         }
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: " . BASE_URL . "/profile/password");
-            exit();
+            $this->redirectToChangePassword();
+            return;
         }
 
         // Verificar token CSRF
-        if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+        if (!function_exists('verifyCSRFToken') || !verifyCSRFToken($_POST['csrf_token'] ?? '')) {
             $_SESSION['error'] = "Token de seguridad inválido";
-            header("Location: " . BASE_URL . "/profile/password");
-            exit();
+            $this->redirectToChangePassword();
+            return;
         }
 
         $user = new User();
-        // USAR EL MÉTODO CORREGIDO
         if (!$user->getUserWithPasswordById($_SESSION['user_id'])) {
             $_SESSION['error'] = "Usuario no encontrado";
-            header("Location: " . BASE_URL . "/dashboard");
-            exit();
+            $this->redirectToDashboard();
+            return;
         }
 
         $current_password = $_POST['current_password'] ?? '';
@@ -133,32 +136,58 @@ class UserController {
         if (empty($errors)) {
             if ($user->changePassword($new_password)) {
                 $_SESSION['success'] = "Contraseña actualizada exitosamente";
-                header("Location: " . BASE_URL . "/profile/password");
-                exit();
+                $this->redirectToChangePassword();
+                return;
             } else {
                 $errors[] = "Error al cambiar la contraseña. Intenta nuevamente.";
             }
         }
 
         $_SESSION['errors'] = $errors;
-        header("Location: " . BASE_URL . "/profile/password");
-        exit();
+        $this->redirectToChangePassword();
     }
 
     // Mostrar perfil del usuario
     public function showProfile() {
         if (!$this->isLoggedIn()) {
-            header("Location: " . BASE_URL . "/login");
-            exit();
+            $this->redirectToLogin();
+            return;
         }
 
         $user = new User();
         if (!$user->getUserById($_SESSION['user_id'])) {
             $_SESSION['error'] = "Usuario no encontrado";
-            header("Location: " . BASE_URL . "/dashboard");
-            exit();
+            $this->redirectToDashboard();
+            return;
         }
 
         include __DIR__ . '/../views/user/profile.php';
+    }
+    
+    // Métodos de redirección mejorados
+    private function redirectToLogin() {
+        // Evitar bucles cuando ya estamos en la página de login
+        $currentUrl = $_SERVER['REQUEST_URI'] ?? '';
+        $isLoginPage = strpos($currentUrl, '/login') !== false;
+        
+        if (!$isLoginPage) {
+            header("Location: " . BASE_URL . "/login");
+            exit();
+        }
+    }
+    
+    private function redirectToDashboard() {
+        header("Location: " . BASE_URL . "/dashboard");
+        exit();
+    }
+    
+    private function redirectToProfileEdit() {
+        header("Location: " . BASE_URL . "/profile/edit");
+        exit();
+    }
+    
+    private function redirectToChangePassword() {
+        header("Location: " . BASE_URL . "/profile/password");
+        exit();
     }
 }

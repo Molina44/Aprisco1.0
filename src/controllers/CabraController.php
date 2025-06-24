@@ -36,7 +36,7 @@ class CabraController {
             'total' => $total
         ];
         
-        $this->loadView('cabras/index', $data);
+        $this->loadView('index', $data);
     }
     
     // Mostrar formulario para crear cabra
@@ -48,7 +48,7 @@ class CabraController {
             'females' => $this->cabra->getBySex('HEMBRA')
         ];
         
-        $this->loadView('cabras/create', $data);
+        $this->loadView('create', $data);
     }
     
     // Procesar creación de cabra
@@ -118,7 +118,7 @@ class CabraController {
         }
         
         $data = ['cabra' => $cabra];
-        $this->loadView('cabras/show', $data);
+        $this->loadView('show', $data);
     }
     
     // Mostrar formulario de edición
@@ -147,7 +147,7 @@ class CabraController {
             'females' => $this->cabra->getBySex('HEMBRA')
         ];
         
-        $this->loadView('cabras/edit', $data);
+        $this->loadView('edit', $data);
     }
     
     // Procesar actualización de cabra
@@ -245,17 +245,20 @@ class CabraController {
         
         $data = [
             'cabras' => $cabras,
-            'searchTerm' => $term
+            'searchTerm' => $term,
+            'currentPage' => 1,
+            'totalPages' => 1,
+            'total' => count($cabras)
         ];
         
-        $this->loadView('cabras/search', $data);
+        $this->loadView('index', $data);
     }
     
     // Obtener estadísticas
     public function stats() {
         $stats = $this->cabra->getStats();
         $data = ['stats' => $stats];
-        $this->loadView('cabras/stats', $data);
+        $this->loadView('stats', $data);
     }
     
     // Métodos auxiliares
@@ -280,7 +283,7 @@ class CabraController {
             return [];
         }
     }
-    
+        
     private function validateCabraData($data) {
         $errors = [];
         
@@ -335,8 +338,25 @@ class CabraController {
         return null;
     }
     
+    // CORRECCIÓN: Método loadView corregido para evitar bucles
     private function loadView($view, $data = []) {
         extract($data);
-        include __DIR__ . "/../views/cabra/cabras.php";
+        
+        // Mapear las vistas correctamente
+        $viewPaths = [
+            'index' => __DIR__ . "/../views/cabra/cabras.php",
+            'create' => __DIR__ . "/../views/cabra/create_cabra.php",
+            'show' => __DIR__ . "/../views/cabra/show_cabra.php",
+            'edit' => __DIR__ . "/../views/cabra/edit_cabra.php",
+            'stats' => __DIR__ . "/../views/cabra/stats_cabra.php"
+        ];
+        
+        if (isset($viewPaths[$view]) && file_exists($viewPaths[$view])) {
+            include $viewPaths[$view];
+        } else {
+            $_SESSION['error'] = 'Vista no encontrada: ' . $view;
+            header('Location: ' . BASE_URL . '/cabras');
+            exit();
+        }
     }
 }

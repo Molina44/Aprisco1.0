@@ -252,4 +252,27 @@ class Cabra {
             return 0;
         }
     }
+
+    public function getAncestors($id, $depth = 10) {
+    $ancestors = [];
+    $current = $this->getById($id);
+    
+    if (!$current || $depth <= 0) {
+        return $ancestors;
+    }
+    
+    if ($current['padre']) {
+        $ancestors[] = $current['padre'];
+        $paternal = $this->getAncestors($current['padre'], $depth - 1);
+        $ancestors = array_merge($ancestors, $paternal);
+    }
+    
+    if ($current['madre']) {
+        $ancestors[] = $current['madre'];
+        $maternal = $this->getAncestors($current['madre'], $depth - 1);
+        $ancestors = array_merge($ancestors, $maternal);
+    }
+    
+    return array_unique($ancestors);
+}
 }
