@@ -14,7 +14,7 @@
                 <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-secondary">← Volver a Lista</a>
                 <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit" class="btn btn-warning">✏️ Editar</a>
                 <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">Dashboard</a>
-                <a href="<?php echo BASE_URL; ?>/logout" class="btn btn-secondary">Cerrar Sesión</a>
+               
             </nav>
         </header>
 

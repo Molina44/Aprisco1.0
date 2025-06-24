@@ -13,7 +13,7 @@
             <h1>Bienvenido, <?php echo e($_SESSION['user_name']); ?>!</h1>
             <nav>
                 <a href="<?php echo BASE_URL; ?>/profile" class="btn btn-secondary">Perfil</a>
-                <a href="<?php echo BASE_URL; ?>/logout" class="btn btn-secondary">Cerrar Sesión</a>
+              
             </nav>
         </header>
 

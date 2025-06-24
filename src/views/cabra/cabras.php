@@ -13,7 +13,7 @@
             <nav>
                 <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">Dashboard</a>
                 <a href="<?php echo BASE_URL; ?>/profile" class="btn btn-secondary">Perfil</a>
-                <a href="<?php echo BASE_URL; ?>/logout" class="btn btn-secondary">Cerrar Sesión</a>
+              
             </nav>
         </header>
 
