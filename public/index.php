@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../src/controllers/AuthController.php';
 require_once __DIR__ . '/../src/controllers/UserController.php';
+require_once __DIR__ . '/../src/controllers/CabraController.php';
 
 // Obtener URI y método HTTP
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -12,6 +13,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 // Router simple
 $authController = new AuthController();
 $userController = new UserController();
+$cabraController = new CabraController();
 
 switch ($uri) {
     case '':
@@ -65,6 +67,46 @@ switch ($uri) {
         } elseif ($method === 'POST') {
             $userController->changePassword();
         }
+        break;
+
+    // Rutas para cabras
+    case '/cabras':
+        $cabraController->index();
+        break;
+
+    case '/cabras/create':
+        if ($method === 'GET') {
+            $cabraController->create();
+        } elseif ($method === 'POST') {
+            $cabraController->store();
+        }
+        break;
+
+    case (preg_match('/^\/cabras\/(\d+)$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $cabraController->show();
+        break;
+
+    case (preg_match('/^\/cabras\/(\d+)\/edit$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        if ($method === 'GET') {
+            $cabraController->edit();
+        } elseif ($method === 'POST') {
+            $cabraController->update();
+        }
+        break;
+
+    case (preg_match('/^\/cabras\/(\d+)\/delete$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $cabraController->delete();
+        break;
+
+    case '/cabras/search':
+        $cabraController->search();
+        break;
+
+    case '/cabras/stats':
+        $cabraController->stats();
         break;
 
     default:

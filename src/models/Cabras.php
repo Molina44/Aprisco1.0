@@ -1,4 +1,5 @@
 <?php
+// models/Cabras.php
 class Cabra {
     private $db;
     

@@ -1,20 +1,20 @@
 <?php
-require_once '../models/Cabras.php';
-require_once '../models/User.php';
-require_once '../config/database.php';
+
+require_once __DIR__ . '/../models/Cabras.php';
+require_once __DIR__ . '/../../config/database.php';
 
 class CabraController {
-    private $Cabra;
+    private $cabra;
     private $db;
     
     public function __construct() {
         $database = new Database();
         $this->db = $database->getConnection();
-        $this->Cabra = new Cabra($this->db);
+        $this->cabra = new Cabra($this->db);
         
         // Verificar que el usuario esté autenticado
         if (!isset($_SESSION['user_id'])) {
-            header('Location: /public/index.php');
+            header('Location: ' . BASE_URL . '/login');
             exit();
         }
     }
@@ -25,18 +25,18 @@ class CabraController {
         $limit = 10;
         $offset = ($page - 1) * $limit;
         
-        $Cabras = $this->Cabra->getAll($limit, $offset);
-        $total = $this->Cabra->count();
+        $cabras = $this->cabra->getAll($limit, $offset);
+        $total = $this->cabra->count();
         $totalPages = ceil($total / $limit);
         
         $data = [
-            'Cabras' => $Cabras,
+            'cabras' => $cabras,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'total' => $total
         ];
         
-        $this->loadView('Cabras/index', $data);
+        $this->loadView('cabras/index', $data);
     }
     
     // Mostrar formulario para crear cabra
@@ -44,17 +44,17 @@ class CabraController {
         $data = [
             'breeds' => $this->getBreeds(),
             'owners' => $this->getOwners(),
-            'males' => $this->Cabra->getBySex('MACHO'),
-            'females' => $this->Cabra->getBySex('HEMBRA')
+            'males' => $this->cabra->getBySex('MACHO'),
+            'females' => $this->cabra->getBySex('HEMBRA')
         ];
         
-        $this->loadView('Cabras/create', $data);
+        $this->loadView('cabras/create', $data);
     }
     
     // Procesar creación de cabra
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
@@ -63,7 +63,7 @@ class CabraController {
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['form_data'] = $_POST;
-            header('Location: /src/controllers/CabraController.php?action=create');
+            header('Location: ' . BASE_URL . '/cabras/create');
             exit();
         }
         
@@ -87,15 +87,15 @@ class CabraController {
             'foto' => $photoPath
         ];
         
-        $Cabra_id = $this->Cabra->create($data);
+        $cabra_id = $this->cabra->create($data);
         
-        if ($Cabra_id) {
+        if ($cabra_id) {
             $_SESSION['success'] = 'Cabra registrada exitosamente';
+            header('Location: ' . BASE_URL . '/cabras/' . $cabra_id);
         } else {
             $_SESSION['error'] = 'Error al registrar la cabra';
+            header('Location: ' . BASE_URL . '/cabras/create');
         }
-        
-        header('Location: /src/controllers/CabraController.php?action=index');
         exit();
     }
     
@@ -105,20 +105,20 @@ class CabraController {
         
         if ($id <= 0) {
             $_SESSION['error'] = 'ID de cabra inválido';
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
-        $Cabra = $this->Cabra->getById($id);
+        $cabra = $this->cabra->getById($id);
         
-        if (!$Cabra) {
+        if (!$cabra) {
             $_SESSION['error'] = 'Cabra no encontrada';
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
-        $data = ['Cabra' => $Cabra];
-        $this->loadView('Cabras/show', $data);
+        $data = ['cabra' => $cabra];
+        $this->loadView('cabras/show', $data);
     }
     
     // Mostrar formulario de edición
@@ -127,33 +127,33 @@ class CabraController {
         
         if ($id <= 0) {
             $_SESSION['error'] = 'ID de cabra inválido';
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
-        $Cabra = $this->Cabra->getById($id);
+        $cabra = $this->cabra->getById($id);
         
-        if (!$Cabra) {
+        if (!$cabra) {
             $_SESSION['error'] = 'Cabra no encontrada';
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
         $data = [
-            'Cabra' => $Cabra,
+            'cabra' => $cabra,
             'breeds' => $this->getBreeds(),
             'owners' => $this->getOwners(),
-            'males' => $this->Cabra->getBySex('MACHO'),
-            'females' => $this->Cabra->getBySex('HEMBRA')
+            'males' => $this->cabra->getBySex('MACHO'),
+            'females' => $this->cabra->getBySex('HEMBRA')
         ];
         
-        $this->loadView('Cabras/edit', $data);
+        $this->loadView('cabras/edit', $data);
     }
     
     // Procesar actualización de cabra
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
@@ -161,7 +161,7 @@ class CabraController {
         
         if ($id <= 0) {
             $_SESSION['error'] = 'ID de cabra inválido';
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
@@ -170,12 +170,12 @@ class CabraController {
         if (!empty($errors)) {
             $_SESSION['errors'] = $errors;
             $_SESSION['form_data'] = $_POST;
-            header("Location: /src/controllers/CabraController.php?action=edit&id={$id}");
+            header('Location: ' . BASE_URL . '/cabras/' . $id . '/edit');
             exit();
         }
         
         // Obtener datos actuales de la cabra
-        $currentCabra = $this->Cabra->getById($id);
+        $currentCabra = $this->cabra->getById($id);
         $photoPath = $currentCabra['foto'];
         
         // Manejar subida de nueva foto
@@ -183,8 +183,8 @@ class CabraController {
             $newPhotoPath = $this->handlePhotoUpload($_FILES['foto']);
             if ($newPhotoPath) {
                 // Eliminar foto anterior si existe
-                if ($photoPath && file_exists("../public/uploads/" . $photoPath)) {
-                    unlink("../public/uploads/" . $photoPath);
+                if ($photoPath && file_exists(__DIR__ . "/../../public/uploads/" . $photoPath)) {
+                    unlink(__DIR__ . "/../../public/uploads/" . $photoPath);
                 }
                 $photoPath = $newPhotoPath;
             }
@@ -204,13 +204,13 @@ class CabraController {
             'foto' => $photoPath
         ];
         
-        if ($this->Cabra->update($id, $data)) {
+        if ($this->cabra->update($id, $data)) {
             $_SESSION['success'] = 'Cabra actualizada exitosamente';
+            header('Location: ' . BASE_URL . '/cabras/' . $id);
         } else {
             $_SESSION['error'] = 'Error al actualizar la cabra';
+            header('Location: ' . BASE_URL . '/cabras/' . $id . '/edit');
         }
-        
-        header('Location: /src/controllers/CabraController.php?action=index');
         exit();
     }
     
@@ -221,14 +221,14 @@ class CabraController {
         if ($id <= 0) {
             $_SESSION['error'] = 'ID de cabra inválido';
         } else {
-            if ($this->Cabra->delete($id, $_SESSION['user_id'])) {
+            if ($this->cabra->delete($id, $_SESSION['user_id'])) {
                 $_SESSION['success'] = 'Cabra eliminada exitosamente';
             } else {
                 $_SESSION['error'] = 'Error al eliminar la cabra';
             }
         }
         
-        header('Location: /src/controllers/CabraController.php?action=index');
+        header('Location: ' . BASE_URL . '/cabras');
         exit();
     }
     
@@ -237,25 +237,25 @@ class CabraController {
         $term = isset($_GET['term']) ? trim($_GET['term']) : '';
         
         if (empty($term)) {
-            header('Location: /src/controllers/CabraController.php?action=index');
+            header('Location: ' . BASE_URL . '/cabras');
             exit();
         }
         
-        $Cabras = $this->Cabra->search($term);
+        $cabras = $this->cabra->search($term);
         
         $data = [
-            'Cabras' => $Cabras,
+            'cabras' => $cabras,
             'searchTerm' => $term
         ];
         
-        $this->loadView('Cabras/search', $data);
+        $this->loadView('cabras/search', $data);
     }
     
     // Obtener estadísticas
     public function stats() {
-        $stats = $this->Cabra->getStats();
+        $stats = $this->cabra->getStats();
         $data = ['stats' => $stats];
-        $this->loadView('Cabras/stats', $data);
+        $this->loadView('cabras/stats', $data);
     }
     
     // Métodos auxiliares
@@ -318,17 +318,17 @@ class CabraController {
             return null;
         }
         
-        $uploadDir = '../public/uploads/Cabras/';
+        $uploadDir = __DIR__ . '/../../public/uploads/cabras/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
         
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('Cabra_') . '.' . $extension;
+        $filename = uniqid('cabra_') . '.' . $extension;
         $filepath = $uploadDir . $filename;
         
         if (move_uploaded_file($file['tmp_name'], $filepath)) {
-            return 'Cabras/' . $filename;
+            return 'cabras/' . $filename;
         }
         
         $_SESSION['error'] = 'Error al subir la foto';
@@ -337,43 +337,6 @@ class CabraController {
     
     private function loadView($view, $data = []) {
         extract($data);
-        include "../views/{$view}.php";
+        include __DIR__ . "/../views/cabra/cabras.php";
     }
-}
-
-// Routing simple
-$action = isset($_GET['action']) ? $_GET['action'] : 'index';
-$controller = new CabraController();
-
-switch ($action) {
-    case 'index':
-        $controller->index();
-        break;
-    case 'create':
-        $controller->create();
-        break;
-    case 'store':
-        $controller->store();
-        break;
-    case 'show':
-        $controller->show();
-        break;
-    case 'edit':
-        $controller->edit();
-        break;
-    case 'update':
-        $controller->update();
-        break;
-    case 'delete':
-        $controller->delete();
-        break;
-    case 'search':
-        $controller->search();
-        break;
-    case 'stats':
-        $controller->stats();
-        break;
-    default:
-        $controller->index();
-        break;
 }

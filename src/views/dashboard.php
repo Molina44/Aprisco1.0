@@ -1,3 +1,4 @@
+<!-- // views/dashboard.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -32,6 +33,13 @@
                         <p>Actualiza tu información personal</p>
                           <a href="<?php echo BASE_URL; ?>/profile/edit" class="btn btn-primary">
                         📝 Editar Perfil
+                    </a>
+                    </div> 
+                    <div class="card">
+                        <h3>Cabras</h3>
+                        <p>información Cabras</p>
+                          <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-primary">
+                        📝 Ver Cabras
                     </a>
                     </div>
                 </div>
