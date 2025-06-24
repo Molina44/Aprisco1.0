@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-06-2025 a las 20:41:32
+-- Tiempo de generación: 24-06-2025 a las 21:40:46
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -204,6 +204,16 @@ CREATE TABLE `razas` (
   `nombre` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `razas`
+--
+
+INSERT INTO `razas` (`id_raza`, `nombre`) VALUES
+(1, 'Alpina'),
+(2, 'Anglonubiana'),
+(3, 'Saanen'),
+(4, 'Cruces');
+
 -- --------------------------------------------------------
 
 --
@@ -226,7 +236,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `telefono`, `fecha_registro`, `fecha_ultimo_acceso`, `activo`) VALUES
-(1, 'Jorge Enrique Nuñez Molina', 'jorgenunez4m@gmail.com', '$2y$10$3tGP7vyufSfqyGFPyONWBeDYFFmQh7jZQ/KSrNyKinnw9/NvoianO', '3203986078', '2025-06-13 14:32:43', '2025-06-13 19:48:06', 1);
+(1, 'Jorge Enrique Nuñez Molina', 'jorgenunez4m@gmail.com', '$2y$10$3tGP7vyufSfqyGFPyONWBeDYFFmQh7jZQ/KSrNyKinnw9/NvoianO', '3203986078', '2025-06-13 14:32:43', '2025-06-24 18:48:45', 1);
 
 --
 -- Índices para tablas volcadas
@@ -316,7 +326,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `cabras`
 --
 ALTER TABLE `cabras`
-  MODIFY `id_cabra` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cabra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `controles_sanitarios`
@@ -358,7 +368,7 @@ ALTER TABLE `propietarios`
 -- AUTO_INCREMENT de la tabla `razas`
 --
 ALTER TABLE `razas`
-  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_raza` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
