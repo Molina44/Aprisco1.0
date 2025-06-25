@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../models/Cabras.php';
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../includes/functions.php';
 
 class CabraController {
     private $cabra;
@@ -50,6 +51,22 @@ class CabraController {
         exit();
     }
     
+    // NUEVA FUNCIÓN: Extraer ID de la URL
+    private function getIdFromUrl() {
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $segments = explode('/', trim($path, '/'));
+        
+        // Buscar el segmento después de 'cabras'
+        $cabrasIndex = array_search('cabras', $segments);
+        if ($cabrasIndex !== false && isset($segments[$cabrasIndex + 1])) {
+            $id = (int)$segments[$cabrasIndex + 1];
+            return $id > 0 ? $id : null;
+        }
+        
+        // Fallback a $_GET['id']
+        return isset($_GET['id']) ? (int)$_GET['id'] : null;
+    }
+    
     // Mostrar lista de cabras
     public function index() {
         if (!$this->isLoggedIn()) {
@@ -76,21 +93,29 @@ class CabraController {
     }
     
     // Mostrar formulario para crear cabra
-    public function create() {
-        if (!$this->isLoggedIn()) {
-            $this->redirectToLogin();
-            return;
-        }
-
-        $data = [
-            'breeds' => $this->getBreeds(),
-            'owners' => $this->getOwners(),
-            'males' => $this->cabra->getBySex('MACHO'),
-            'females' => $this->cabra->getBySex('HEMBRA')
-        ];
-        
-        $this->loadView('create', $data);
+public function create() {
+    if (!$this->isLoggedIn()) {
+        $this->redirectToLogin();
+        return;
     }
+
+    // Debug: Verificar qué datos se están obteniendo
+    $males = $this->cabra->getBySex('MACHO');
+    $females = $this->cabra->getBySex('HEMBRA');
+    
+    // Debug temporal - puedes eliminarlo después
+    error_log("Males encontrados: " . count($males));
+    error_log("Females encontradas: " . count($females));
+
+    $data = [
+        'breeds' => $this->getBreeds(),
+        'owners' => $this->getOwners(),
+        'males' => $males,
+        'females' => $females
+    ];
+    
+    $this->loadView('create', $data);
+}
     
     // Procesar creación de cabra
     public function store() {
@@ -105,10 +130,11 @@ class CabraController {
         }
         
         // Verificar token CSRF
-        if (!function_exists('verifyCSRFToken') || !verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-            $_SESSION['error'] = "Token de seguridad inválido";
-            $this->redirectToCabras();
-            return;
+        if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = "Token de seguridad inválido o expirado";
+            $_SESSION['form_data'] = $_POST;
+            header('Location: ' . BASE_URL . '/cabras/create');
+            exit();
         }
         
         $errors = $this->validateCabraData($_POST);
@@ -159,9 +185,9 @@ class CabraController {
             return;
         }
 
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $id = $this->getIdFromUrl();
         
-        if ($id <= 0) {
+        if (!$id || $id <= 0) {
             $_SESSION['error'] = 'ID de cabra inválido';
             $this->redirectToCabras();
             return;
@@ -180,40 +206,49 @@ class CabraController {
     }
     
     // Mostrar formulario de edición
-    public function edit() {
-        if (!$this->isLoggedIn()) {
-            $this->redirectToLogin();
-            return;
-        }
+public function edit() {
+    if (!$this->isLoggedIn()) {
+        $this->redirectToLogin();
+        return;
+    }
 
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        
-        if ($id <= 0) {
-            $_SESSION['error'] = 'ID de cabra inválido';
-            $this->redirectToCabras();
-            return;
-        }
-        
-        $cabra = $this->cabra->getById($id);
-        
-        if (!$cabra) {
-            $_SESSION['error'] = 'Cabra no encontrada';
-            $this->redirectToCabras();
-            return;
-        }
-        
-        $data = [
-            'cabra' => $cabra,
-            'breeds' => $this->getBreeds(),
-            'owners' => $this->getOwners(),
-            'males' => $this->cabra->getBySex('MACHO'),
-            'females' => $this->cabra->getBySex('HEMBRA')
-        ];
-        
-        $this->loadView('edit', $data);
+    $id = $this->getIdFromUrl();
+    
+    if (!$id || $id <= 0) {
+        $_SESSION['error'] = 'ID de cabra inválido';
+        $this->redirectToCabras();
+        return;
     }
     
-    // Procesar actualización de cabra
+    $cabra = $this->cabra->getById($id);
+    
+    if (!$cabra) {
+        $_SESSION['error'] = 'Cabra no encontrada';
+        $this->redirectToCabras();
+        return;
+    }
+    
+    // Obtener machos y hembras, excluyendo la cabra actual
+    $males = $this->cabra->getBySexExcluding('MACHO', $id);
+    $females = $this->cabra->getBySexExcluding('HEMBRA', $id);
+    
+    // Debug temporal
+    error_log("Editando cabra ID: $id");
+    error_log("Males disponibles: " . count($males));
+    error_log("Females disponibles: " . count($females));
+    
+    $data = [
+        'cabra' => $cabra,
+        'breeds' => $this->getBreeds(),
+        'owners' => $this->getOwners(),
+        'males' => $males,
+        'females' => $females
+    ];
+    
+    $this->loadView('edit', $data);
+}
+    
+    // MÉTODO CORREGIDO: Procesar actualización de cabra
     public function update() {
         if (!$this->isLoggedIn()) {
             $this->redirectToLogin();
@@ -225,19 +260,29 @@ class CabraController {
             return;
         }
         
-        $id = isset($_POST['id_cabra']) ? (int)$_POST['id_cabra'] : 0;
+        // CORRECCIÓN: Obtener ID de la URL, no del POST
+        $id = $this->getIdFromUrl();
         
-        if ($id <= 0) {
-            $_SESSION['error'] = 'ID de cabra inválido';
+        if (!$id || $id <= 0) {
+            $_SESSION['error'] = 'ID de cabra inválido para actualización';
+            $this->redirectToCabras();
+            return;
+        }
+        
+        // Verificar que la cabra existe antes de proceder
+        $existingCabra = $this->cabra->getById($id);
+        if (!$existingCabra) {
+            $_SESSION['error'] = 'La cabra que intenta actualizar no existe';
             $this->redirectToCabras();
             return;
         }
         
         // Verificar token CSRF
-        if (!function_exists('verifyCSRFToken') || !verifyCSRFToken($_POST['csrf_token'] ?? '')) {
-            $_SESSION['error'] = "Token de seguridad inválido";
-            $this->redirectToCabraEdit($id);
-            return;
+        if (!verifyCSRFToken($_POST['csrf_token'] ?? '')) {
+            $_SESSION['error'] = "Token de seguridad inválido o expirado";
+            $_SESSION['form_data'] = $_POST;
+            header('Location: ' . BASE_URL . '/cabras/' . $id . '/edit');
+            exit();
         }
         
         $errors = $this->validateCabraData($_POST);
@@ -289,33 +334,63 @@ class CabraController {
     }
     
     // Eliminar cabra (cambiar estado a INACTIVA)
-    public function delete() {
-        if (!$this->isLoggedIn()) {
-            $this->redirectToLogin();
-            return;
-        }
+ public function delete() {
+    if (!$this->isLoggedIn()) {
+        $this->redirectToLogin();
+        return;
+    }
 
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    // Obtener ID de la URL (para GET) o del POST
+    $id = null;
+    
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Si viene por POST, obtener del body
+        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+    } else {
+        // Si viene por GET, obtener de la URL
+        $id = $this->getIdFromUrl();
+    }
+    
+    if (!$id || $id <= 0) {
+        $_SESSION['error'] = 'ID de cabra inválido';
+        $this->redirectToCabras();
+        return;
+    }
+    
+    // Verificar que la cabra existe
+    $existingCabra = $this->cabra->getById($id);
+    if (!$existingCabra) {
+        $_SESSION['error'] = 'La cabra que intenta eliminar no existe';
+        $this->redirectToCabras();
+        return;
+    }
+    
+    // Si es GET, mostrar confirmación
+    if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        $data = ['cabra' => $existingCabra];
+        $this->loadView('delete', $data);
+        return;
+    }
+    
+    // Si es POST, proceder con la eliminación
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Verificar token CSRF si se envía
+        if (isset($_POST['csrf_token']) && !verifyCSRFToken($_POST['csrf_token'])) {
+            $_SESSION['error'] = "Token de seguridad inválido o expirado";
             $this->redirectToCabras();
             return;
         }
         
-        $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-        
-        if ($id <= 0) {
-            $_SESSION['error'] = 'ID de cabra inválido';
+        if ($this->cabra->delete($id, $_SESSION['user_id'])) {
+            $_SESSION['success'] = 'Cabra eliminada exitosamente';
         } else {
-            if ($this->cabra->delete($id, $_SESSION['user_id'])) {
-                $_SESSION['success'] = 'Cabra eliminada exitosamente';
-            } else {
-                $_SESSION['error'] = 'Error al eliminar la cabra';
-            }
+            $_SESSION['error'] = 'Error al eliminar la cabra';
         }
-        
-        $this->redirectToCabras();
     }
     
-
+    $this->redirectToCabras();
+}
+    
     // Buscar cabras
     public function search() {
         $term = isset($_GET['term']) ? trim($_GET['term']) : '';
@@ -422,7 +497,6 @@ class CabraController {
         return null;
     }
     
-    // CORRECCIÓN: Método loadView corregido para evitar bucles
     private function loadView($view, $data = []) {
         extract($data);
         
@@ -444,3 +518,4 @@ class CabraController {
         }
     }
 }
+?>

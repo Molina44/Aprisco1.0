@@ -109,16 +109,22 @@
                                 </p>
                             </div>
                             
-                            <div class="cabra-actions">
-                                <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>" 
-                                   class="btn btn-sm btn-info">👁️ Ver</a>
-                                <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit" 
-                                   class="btn btn-sm btn-warning">✏️ Editar</a>
-                                <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete" 
-                                   class="btn btn-sm btn-danger"
-                                   onclick="return confirm('¿Estás seguro de eliminar esta cabra?')">🗑️ Eliminar</a>
-                            </div>
-                        </div>
+  <div class="cabra-actions">
+    <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>" 
+       class="btn btn-sm btn-info">👁️ Ver</a>
+    <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit" 
+       class="btn btn-sm btn-warning">✏️ Editar</a>
+    
+    <!-- Formulario inline para eliminación con confirmación JS -->
+    <form method="POST" action="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete" 
+          style="display: inline-block;" 
+          onsubmit="return confirm('¿Estás seguro de eliminar la cabra <?php echo e($cabra['nombre']); ?>? Esta acción la marcará como INACTIVA.')">
+        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+        <input type="hidden" name="id" value="<?php echo $cabra['id_cabra']; ?>">
+        <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+    </form>
+</div>
+
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="empty-state">

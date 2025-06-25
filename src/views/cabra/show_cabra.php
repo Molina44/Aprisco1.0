@@ -157,9 +157,13 @@
                         <div class="detail-actions">
                             <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit" 
                                class="btn btn-warning">✏️ Editar Cabra</a>
-                            <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete" 
-                               class="btn btn-danger"
-                               onclick="return confirm('¿Estás seguro de eliminar esta cabra?')">🗑️ Eliminar</a>
+                                <form method="POST" action="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete" 
+          style="display: inline-block;" 
+          onsubmit="return confirm('¿Estás seguro de eliminar la cabra <?php echo e($cabra['nombre']); ?>? Esta acción la marcará como INACTIVA.')">
+        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+        <input type="hidden" name="id" value="<?php echo $cabra['id_cabra']; ?>">
+        <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+    </form>
                             <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-secondary">← Volver a Lista</a>
                         </div>
                     </div>

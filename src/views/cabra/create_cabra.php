@@ -1,3 +1,10 @@
+<?php
+// Generar token CSRF solo si no existe
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -40,6 +47,7 @@
             <!-- Formulario de registro -->
             <div class="form-container">
                 <form method="POST" action="<?php echo BASE_URL; ?>/cabras/create" enctype="multipart/form-data" class="cabra-form">
+                      <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <div class="form-sections">
                         <!-- Información Básica -->
                         <div class="form-section">

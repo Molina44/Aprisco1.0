@@ -38,46 +38,51 @@ class Cabra {
     }
     
     // Obtener todas las cabras con información relacionada
-    public function getAll($limit = null, $offset = null) {
-        try {
-            $query = "SELECT c.*, 
-                            r.nombre as raza_nombre,
-                            p.nombre as propietario_nombre,
-                            madre.nombre as madre_nombre,
-                            padre.nombre as padre_nombre,
-                            u.nombre as creado_por_nombre
-                     FROM cabras c
-                     LEFT JOIN razas r ON c.id_raza = r.id_raza
-                     LEFT JOIN propietarios p ON c.id_propietario_actual = p.id_propietario
-                     LEFT JOIN cabras madre ON c.madre = madre.id_cabra
-                     LEFT JOIN cabras padre ON c.padre = padre.id_cabra
-                     LEFT JOIN usuarios u ON c.creado_por = u.id
-                     ORDER BY c.fecha_registro DESC";
-            
-            if ($limit !== null) {
-                $query .= " LIMIT :limit";
-                if ($offset !== null) {
-                    $query .= " OFFSET :offset";
-                }
-            }
-            
-            $stmt = $this->db->prepare($query);
-            
-            if ($limit !== null) {
-                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-                if ($offset !== null) {
-                    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-                }
-            }
-            
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Error getting Cabras: " . $e->getMessage());
-            return false;
+   public function getAll($limit = null, $offset = null, $includeInactive = false) {
+    try {
+        $query = "SELECT c.*, 
+                        r.nombre as raza_nombre,
+                        p.nombre as propietario_nombre,
+                        madre.nombre as madre_nombre,
+                        padre.nombre as padre_nombre,
+                        u.nombre as creado_por_nombre
+                 FROM cabras c
+                 LEFT JOIN razas r ON c.id_raza = r.id_raza
+                 LEFT JOIN propietarios p ON c.id_propietario_actual = p.id_propietario
+                 LEFT JOIN cabras madre ON c.madre = madre.id_cabra
+                 LEFT JOIN cabras padre ON c.padre = padre.id_cabra
+                 LEFT JOIN usuarios u ON c.creado_por = u.id";
+        
+        // Filtrar cabras inactivas por defecto
+        if (!$includeInactive) {
+            $query .= " WHERE c.estado = 'ACTIVA'";
         }
+        
+        $query .= " ORDER BY c.fecha_registro DESC";
+        
+        if ($limit !== null) {
+            $query .= " LIMIT :limit";
+            if ($offset !== null) {
+                $query .= " OFFSET :offset";
+            }
+        }
+        
+        $stmt = $this->db->prepare($query);
+        
+        if ($limit !== null) {
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            if ($offset !== null) {
+                $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            }
+        }
+        
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error getting Cabras: " . $e->getMessage());
+        return false;
     }
-    
+}
     // Obtener una cabra por ID
     public function getById($id) {
         try {
@@ -161,47 +166,70 @@ class Cabra {
     }
     
     // Buscar cabras
-    public function search($term) {
-        try {
-            $query = "SELECT c.*, 
-                            r.nombre as raza_nombre,
-                            p.nombre as propietario_nombre
-                     FROM cabras c
-                     LEFT JOIN razas r ON c.id_raza = r.id_raza
-                     LEFT JOIN propietarios p ON c.id_propietario_actual = p.id_propietario
-                     WHERE c.nombre LIKE :term 
-                        OR c.color LIKE :term 
-                        OR r.nombre LIKE :term
-                        OR p.nombre LIKE :term
-                     ORDER BY c.nombre";
-            
-            $stmt = $this->db->prepare($query);
-            $searchTerm = "%{$term}%";
-            $stmt->bindParam(':term', $searchTerm);
-            $stmt->execute();
-            
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Error searching Cabras: " . $e->getMessage());
-            return false;
+public function search($term, $includeInactive = false) {
+    try {
+        $query = "SELECT c.*, 
+                        r.nombre as raza_nombre,
+                        p.nombre as propietario_nombre
+                 FROM cabras c
+                 LEFT JOIN razas r ON c.id_raza = r.id_raza
+                 LEFT JOIN propietarios p ON c.id_propietario_actual = p.id_propietario
+                 WHERE (c.nombre LIKE :term 
+                    OR c.color LIKE :term 
+                    OR r.nombre LIKE :term
+                    OR p.nombre LIKE :term)";
+        
+        // Filtrar cabras inactivas por defecto
+        if (!$includeInactive) {
+            $query .= " AND c.estado = 'ACTIVA'";
         }
+        
+        $query .= " ORDER BY c.nombre";
+        
+        $stmt = $this->db->prepare($query);
+        $searchTerm = "%{$term}%";
+        $stmt->bindParam(':term', $searchTerm);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error searching Cabras: " . $e->getMessage());
+        return false;
     }
+}
+// Obtener cabras por sexo excluyendo una ID específica (para evitar auto-parentesco)
+public function getBySexExcluding($sex, $excludeId) {
+    try {
+        $query = "SELECT * FROM cabras WHERE sexo = :sex AND estado = 'ACTIVA' AND id_cabra != :exclude_id ORDER BY nombre";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':sex', $sex);
+        $stmt->bindParam(':exclude_id', $excludeId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error getting Cabras by sex excluding ID: " . $e->getMessage());
+        return [];
+    }
+}
     
     // Obtener cabras por sexo
-    public function getBySex($sex) {
-        try {
-            $query = "SELECT * FROM cabras WHERE sexo = :sex AND estado = 'ACTIVA' ORDER BY nombre";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':sex', $sex);
-            $stmt->execute();
-            
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Error getting Cabras by sex: " . $e->getMessage());
-            return false;
-        }
+// También mejora el método getBySex() original para que retorne array vacío en caso de error
+public function getBySex($sex) {
+    try {
+        $query = "SELECT * FROM cabras WHERE sexo = :sex AND estado = 'ACTIVA' ORDER BY nombre";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':sex', $sex);
+        $stmt->execute();
+        
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("getBySex($sex) - Resultados: " . count($result)); // Debug temporal
+        return $result;
+    } catch (PDOException $e) {
+        error_log("Error getting Cabras by sex: " . $e->getMessage());
+        return []; // Retorna array vacío en lugar de false
     }
-    
+}
     // Obtener estadísticas
     public function getStats() {
         try {

@@ -48,7 +48,17 @@ function generateCSRFToken() {
 
 // Verificar token CSRF
 function verifyCSRFToken($token) {
-    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    if (!isset($_SESSION['csrf_token']) || empty($_SESSION['csrf_token'])) {
+        return false;
+    }
+    
+    if ($_SESSION['csrf_token'] !== $token) {
+        return false;
+    }
+    
+    // Regenerar token después de verificar
+    unset($_SESSION['csrf_token']);
+    return true;
 }
 
 // Escapar output HTML
