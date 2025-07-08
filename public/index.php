@@ -1,9 +1,12 @@
+
 <?php
+
 // public/index.php
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../src/controllers/AuthController.php';
 require_once __DIR__ . '/../src/controllers/UserController.php';
 require_once __DIR__ . '/../src/controllers/CabraController.php';
+require_once __DIR__ . '/../src/controllers/RazasController.php';
 
 // Obtener URI y método HTTP
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -14,6 +17,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $authController = new AuthController();
 $userController = new UserController();
 $cabraController = new CabraController();
+$razasController = new RazaController();
 
 switch ($uri) {
     case '':
@@ -107,6 +111,44 @@ switch ($uri) {
 
     case '/cabras/stats':
         $cabraController->stats();
+        break;
+  case '/razas':
+        $razasController->index();
+        break;
+
+    case '/razas/create':
+        if ($method === 'GET') {
+            $razasController->create();
+        } elseif ($method === 'POST') {
+            $razasController->store();
+        }
+        break;
+
+    case (preg_match('/^\/razas\/(\d+)$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $razasController->show();
+        break;
+
+    case (preg_match('/^\/razas\/(\d+)\/edit$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        if ($method === 'GET') {
+            $razasController->edit();
+        } elseif ($method === 'POST') {
+            $razasController->update();
+        }
+        break;
+
+    case (preg_match('/^\/razas\/(\d+)\/delete$/', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $razasController->delete();
+        break;
+
+    case '/razas/search':
+        $razasController->search();
+        break;
+
+    case '/razas/stats':
+        $razasController->stats();
         break;
 
     default:

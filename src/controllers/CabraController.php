@@ -75,7 +75,7 @@ class CabraController {
         }
         
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = 10;
+        $limit = 6;
         $offset = ($page - 1) * $limit;
         
         $cabras = $this->cabra->getAll($limit, $offset);

@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Excluir assets de la redirección a PHP
+    RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+    
+    # Redirige todo lo demás a public/index.php
+    RewriteRule ^((?!public/).*)$ public/index.php?url=$1 [L,QSA]
+</IfModule>
