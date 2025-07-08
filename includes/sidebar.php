@@ -58,14 +58,7 @@
                                 <span class="submenu-text">cabras</span>
                             </a>
                         </li>
-                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/cabras/stats') !== false) ? 'active' : ''; ?>">
-                            <a href="<?php echo BASE_URL; ?>/cabras/stats" class="submenu-link">
-                                <div class="submenu-icon">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <span class="submenu-text">Estadísticas</span>
-                            </a>
-                        </li>
+                      
                     </ul>
                 </li>
 
@@ -101,6 +94,30 @@
         </li>
     </ul>
 </li>
+    <!-- Menú propietarios COMPLETO -->
+<li class="nav-item has-submenu <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios') !== false) ? 'active expanded' : ''; ?>">
+    <a href="<?php echo BASE_URL; ?>/propietarios" class="nav-link">
+        <div class="nav-icon"><i class="fas fa-user-friends"></i></div>
+        <span class="nav-text">Propietarios</span>
+        <div class="nav-arrow"><i class="fas fa-chevron-right"></i></div>
+        <div class="nav-indicator"></div>
+    </a>
+    <ul class="submenu">
+        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios/create') !== false) ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/propietarios/create" class="submenu-link">
+                <div class="submenu-icon"><i class="fas fa-plus"></i></div>
+                <span class="submenu-text">Nuevo Propietario</span>
+            </a>
+        </li>
+        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios') !== false && !strpos($_SERVER['REQUEST_URI'], '/create')) ? 'active' : ''; ?>">
+            <a href="<?php echo BASE_URL; ?>/propietarios" class="submenu-link">
+                <div class="submenu-icon"><i class="fas fa-list-ul"></i></div>
+                <span class="submenu-text">Listado</span>
+            </a>
+        </li>
+    </ul>
+</li>
+
 
           
             </ul>

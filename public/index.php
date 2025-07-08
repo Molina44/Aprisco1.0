@@ -6,6 +6,7 @@ require_once __DIR__ . '/../src/controllers/AuthController.php';
 require_once __DIR__ . '/../src/controllers/UserController.php';
 require_once __DIR__ . '/../src/controllers/CabraController.php';
 require_once __DIR__ . '/../src/controllers/RazasController.php';
+require_once __DIR__ . '/../src/controllers/PropietariosController.php';
 
 // Obtener URI y método HTTP
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -17,6 +18,7 @@ $authController = new AuthController();
 $userController = new UserController();
 $cabraController = new CabraController();
 $razasController = new RazasController();
+$propietariosController = new PropietariosController();
 
 switch ($uri) {
     case '':
@@ -114,6 +116,30 @@ switch ($uri) {
         $_GET['id'] = $matches[1];
         $razasController->delete();
         break;
+
+        // CRUD Propietarios
+case '/propietarios':
+    $propietariosController->index();
+    break;
+
+case '/propietarios/create':
+    $method === 'GET' ? $propietariosController->create() : $propietariosController->store();
+    break;
+
+case (preg_match('#^/propietarios/(\d+)$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $propietariosController->show();
+    break;
+
+case (preg_match('#^/propietarios/(\d+)/edit$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $method === 'GET' ? $propietariosController->edit() : $propietariosController->update();
+    break;
+
+case (preg_match('#^/propietarios/(\d+)/delete$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $propietariosController->delete();
+    break;
 
 
     default:
