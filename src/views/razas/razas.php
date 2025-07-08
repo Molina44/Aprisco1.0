@@ -3,128 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Razas - <?php echo SITE_NAME; ?></title>
-    <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
+    <title>Gestión de Razas - <?= SITE_NAME ?></title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
 </head>
 <body>
+    <?php include __DIR__ . '/../../../includes/sidebar.php'; ?>
+    
     <div class="container">
         <header class="dashboard-header">
-            <h1>🐐 Gestión de Razas</h1>
-            <nav>
-                <a href="<?php echo BASE_URL; ?>/razas/create" class="btn btn-primary">➕ Nueva Raza</a>
-                <a href="<?php echo BASE_URL; ?>/razas/stats" class="btn btn-info">📊 Estadísticas</a>
-                <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">🏠 Dashboard</a>
-                <a href="<?php echo BASE_URL; ?>/logout" class="btn btn-secondary">🚪 Salir</a>
-            </nav>
+            <h1>🐏 Gestión de Razas</h1>
+        
         </header>
 
         <main class="main-content">
             <!-- Mensajes -->
             <?php if (isset($_SESSION['success'])): ?>
-                <div class="alert alert-success">
-                    <?php echo e($_SESSION['success']); unset($_SESSION['success']); ?>
-                </div>
+                <div class="alert alert-success"><?= $_SESSION['success'] ?></div>
+                <?php unset($_SESSION['success']) ?>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
-                <div class="alert alert-error">
-                    <?php echo e($_SESSION['error']); unset($_SESSION['error']); ?>
-                </div>
+                <div class="alert alert-error"><?= $_SESSION['error'] ?></div>
+                <?php unset($_SESSION['error']) ?>
             <?php endif; ?>
 
-            <!-- Búsqueda -->
-            <div class="search-section">
-                <form method="GET" action="<?php echo BASE_URL; ?>/razas/search" class="search-form">
-                    <input type="text" name="term" placeholder="Buscar razas..." 
-                           value="<?php echo isset($searchTerm) ? e($searchTerm) : ''; ?>" required>
-                    <button type="submit" class="btn btn-primary">🔍 Buscar</button>
-                    <?php if (isset($searchTerm)): ?>
-                        <a href="<?php echo BASE_URL; ?>/razas" class="btn btn-secondary">❌ Limpiar</a>
-                    <?php endif; ?>
-                </form>
-            </div>
-
-            <!-- Información de resultados -->
-            <div class="results-info">
-                <?php if (isset($searchTerm)): ?>
-                    <p>Resultados de búsqueda para "<strong><?php echo e($searchTerm); ?></strong>": 
-                       <?php echo $total; ?> raza<?php echo $total != 1 ? 's' : ''; ?> encontrada<?php echo $total != 1 ? 's' : ''; ?></p>
+            <!-- Listado -->
+            <div class="razas-grid">
+                <?php if (!empty($razas) && is_array($razas)): ?>
+                    <?php foreach ($razas as $raza): ?>
+                        <div class="raza-card">
+                            <div class="raza-header">
+                                <h3><?= htmlspecialchars($raza['nombre']) ?></h3>
+                               
+                            </div>
+                            
+                            <div class="raza-actions">
+                                <a href="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>" class="btn btn-sm btn-info">👁️ Ver</a>
+                                <a href="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>/edit" class="btn btn-sm btn-warning">✏️ Editar</a>
+                                <form method="POST" action="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>/delete" 
+                                      onsubmit="return confirm('¿Eliminar esta raza?')">
+                                    <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
+                                    <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                 <?php else: ?>
-                    <p>Total: <?php echo $total; ?> raza<?php echo $total != 1 ? 's' : ''; ?> registrada<?php echo $total != 1 ? 's' : ''; ?></p>
-                <?php endif; ?>
-            </div>
-
-            <!-- Tabla de razas -->
-            <?php if (!empty($razas)): ?>
-                <div class="table-container">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Total de Cabras</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($razas as $raza): ?>
-                                <tr>
-                                    <td><?php echo $raza['id_raza']; ?></td>
-                                    <td class="nombre-raza">
-                                        <strong><?php echo e($raza['nombre']); ?></strong>
-                                    </td>
-                                    <td>
-                                        <span class="badge <?php echo $raza['total_cabras'] > 0 ? 'badge-success' : 'badge-secondary'; ?>">
-                                            <?php echo $raza['total_cabras']; ?> cabra<?php echo $raza['total_cabras'] != 1 ? 's' : ''; ?>
-                                        </span>
-                                    </td>
-                                    <td class="actions">
-                                        <a href="<?php echo BASE_URL; ?>/razas/<?php echo $raza['id_raza']; ?>" 
-                                           class="btn btn-sm btn-info" title="Ver detalles">👁️</a>
-                                        <a href="<?php echo BASE_URL; ?>/razas/<?php echo $raza['id_raza']; ?>/edit" 
-                                           class="btn btn-sm btn-primary" title="Editar">✏️</a>
-                                        <?php if ($raza['total_cabras'] == 0): ?>
-                                            <a href="<?php echo BASE_URL; ?>/razas/<?php echo $raza['id_raza']; ?>/delete" 
-                                               class="btn btn-sm btn-danger" title="Eliminar"
-                                               onclick="return confirm('¿Está seguro de eliminar esta raza?')">🗑️</a>
-                                        <?php else: ?>
-                                            <span class="btn btn-sm btn-secondary disabled" title="No se puede eliminar (tiene cabras asociadas)">🔒</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Paginación -->
-                 
-                <?php if ($totalPages > 1): ?>
-                    <div class="pagination">
-                        <?php if ($currentPage > 1): ?>
-                            <a href="<?php echo BASE_URL; ?>/razas?page=<?php echo $currentPage - 1; ?>" class="btn btn-secondary">← Anterior</a>
-                        <?php endif; ?>
-
-                        <span class="page-info">
-                            Página <?php echo $currentPage; ?> de <?php echo $totalPages; ?>
-                        </span>
-
-                        <?php if ($currentPage < $totalPages): ?>
-                            <a href="<?php echo BASE_URL; ?>/razas?page=<?php echo $currentPage + 1; ?>" class="btn btn-secondary">Siguiente →</a>
-                        <?php endif; ?>
+                    <div class="empty-state">
+                        <h3>🐏 No hay razas registradas</h3>
+                        <p>Comienza agregando tu primera raza</p>
+                        <a href="<?= BASE_URL ?>/razas/create" class="btn btn-primary">➕ Registrar Raza</a>
                     </div>
                 <?php endif; ?>
-            <?php else: ?>
-                <div class="empty-state">
-                    <h3>🔍 No se encontraron razas</h3>
-                    <?php if (isset($searchTerm)): ?>
-                        <p>No hay razas que coincidan con "<?php echo e($searchTerm); ?>"</p>
-                        <a href="<?php echo BASE_URL; ?>/razas" class="btn btn-primary">Ver todas las razas</a>
-                    <?php else: ?>
-                        <p>Aún no has registrado ninguna raza</p>
-                        <a href="<?php echo BASE_URL; ?>/razas/create" class="btn btn-primary">Registrar primera raza</a>
-                    <?php endif; ?>
+            </div>
+
+            <!-- Paginación -->
+            <?php if (isset($totalPages) && $totalPages > 1): ?>
+                <div class="pagination">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="<?= BASE_URL ?>/razas?page=<?= $i ?>" 
+                           class="<?= $i == $currentPage ? 'active' : '' ?>">
+                            <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
                 </div>
             <?php endif; ?>
         </main>
     </div>
+
+    <style>
+        .razas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .raza-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .raza-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .raza-actions {
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</body>
+</html>
