@@ -188,7 +188,7 @@ $csrf_token = $_SESSION['csrf_token'];
                             <?php if (!empty($cabra['foto'])): ?>
                                 <div class="current-photo">
                                     <label>Foto Actual:</label>
-                                    <img src="<?php echo BASE_URL; ?>/uploads/goats/<?php echo e($cabra['foto']); ?>" 
+                                    <img src="<?php echo BASE_URL; ?>/uploads/<?php echo e($cabra['foto']); ?>" 
                                          alt="Foto actual de <?php echo e($cabra['nombre']); ?>" 
                                          style="max-width: 200px; max-height: 200px; border-radius: 8px; display: block; margin: 10px 0;">
                                 </div>

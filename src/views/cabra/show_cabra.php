@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../models/HistorialPropiedad.php';
 require_once __DIR__ . '/../../models/Propietarios.php';
 require_once __DIR__ . '/../../models/Parto.php';
 require_once __DIR__ . '/../../models/EventoReproductivo.php';
+require_once __DIR__ . '/../../models/ControlSanitario.php';
 
 $db = (new Database())->getConnection();
 
@@ -15,6 +16,9 @@ $padres = $partoModel->getPadresDisponibles();
 
 $eventoModel = new EventoReproductivo($db);
 $eventos_reproductivos = $eventoModel->getByCabra($cabra['id_cabra']);
+
+$controlSanitarioModel = new ControlSanitario($db);
+$controles_sanitarios = $controlSanitarioModel->getByCabra($cabra['id_cabra']);
 ?>
 
 <!DOCTYPE html>
@@ -292,6 +296,44 @@ $eventos_reproductivos = $eventoModel->getByCabra($cabra['id_cabra']);
         </div>
     <?php else: ?>
         <p class="text-muted">No hay eventos registrados.</p>
+    <?php endif; ?>
+</div>
+
+<!-- Sección adicional: Controles Sanitarios -->
+<div class="info-group">
+    <h3>🩺 Controles Sanitarios</h3>
+    <div class="detail-actions">
+        <a href="<?= BASE_URL ?>/controles/<?= $cabra['id_cabra'] ?>/create" class="btn btn-primary">➕ Añadir Control</a>
+    </div>
+
+    <?php if (!empty($controles_sanitarios)): ?>
+        <div class="info-items">
+            <?php foreach ($controles_sanitarios as $control): ?>
+                <div class="info-item">
+                    <div>
+                        <strong>Fecha:</strong> <?= date('d/m/Y', strtotime($control['fecha_control'])) ?><br>
+                        <strong>Peso:</strong> <?= $control['peso_kg'] ?? '-' ?> kg<br>
+                        <strong>Condición:</strong> <?= $control['condicion_especial'] ?? '-' ?><br>
+                        <strong>Famacha:</strong> <?= $control['famacha'] ?? '-' ?><br>
+                        <strong>Drack:</strong> <?= $control['drack_score'] ?? '-' ?><br>
+                        <?php if (!empty($control['foto_ubre'])): ?>
+                            <strong>Foto Ubre:</strong>
+                            <img src="<?= BASE_URL ?>/uploads/<?= htmlspecialchars($control['foto_ubre']) ?>" alt="Foto Ubre" style="max-height:100px;">
+
+                        <?php endif; ?>
+                        <strong>Observaciones:</strong> <?= nl2br(htmlspecialchars($control['observaciones'])) ?><br>
+                    </div>
+                    <div style="margin-left:auto;">
+                        <form method="POST" action="<?= BASE_URL ?>/controles/<?= $control['id_control'] ?>/delete" style="display:inline-block;" onsubmit="return confirm('¿Eliminar este control?')">
+                            <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
+                            <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="text-muted">No hay controles sanitarios registrados.</p>
     <?php endif; ?>
 </div>
 

@@ -76,4 +76,15 @@ class EventoReproductivo {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Nuevo: obtener controles sanitarios por cabra
+    public function getControlesSanitariosByCabra($id_cabra) {
+        $sql = "SELECT * FROM controles_sanitarios
+                WHERE id_cabra = :id_cabra
+                ORDER BY fecha_control DESC";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id_cabra', $id_cabra, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
