@@ -8,6 +8,7 @@ require_once __DIR__ . '/../src/controllers/CabraController.php';
 require_once __DIR__ . '/../src/controllers/RazasController.php';
 require_once __DIR__ . '/../src/controllers/PropietariosController.php';
 require_once __DIR__ . '/../src/controllers/HistorialPropiedadController.php';
+require_once __DIR__ . '/../src/controllers/PartosController.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = rtrim($uri, '/');
@@ -19,6 +20,7 @@ $cabraController = new CabraController();
 $razasController = new RazasController();
 $propietariosController = new PropietariosController();
 $historialController = new HistorialPropiedadController();
+$partosController = new PartosController();
 
 switch ($uri) {
     case '':
@@ -161,6 +163,23 @@ switch ($uri) {
         $_GET['id'] = $matches[1];
         $historialController->delete();
         break;
+
+        // Partos
+case (preg_match('#^/partos/(\d+)/create$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $method === 'GET' ? $partosController->create() : $partosController->store();
+    break;
+
+case (preg_match('#^/partos/(\d+)/edit$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $method === 'GET' ? $partosController->edit() : $partosController->update();
+    break;
+
+case (preg_match('#^/partos/(\d+)/delete$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $partosController->delete();
+    break;
+
 
     default:
         http_response_code(404);

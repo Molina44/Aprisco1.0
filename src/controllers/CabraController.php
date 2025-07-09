@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../models/Parto.php';
 require_once __DIR__ . '/../models/Cabras.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/functions.php';
@@ -179,31 +180,40 @@ public function create() {
     }
     
     // Mostrar detalles de una cabra
-    public function show() {
-        if (!$this->isLoggedIn()) {
-            $this->redirectToLogin();
-            return;
-        }
-
-        $id = $this->getIdFromUrl();
-        
-        if (!$id || $id <= 0) {
-            $_SESSION['error'] = 'ID de cabra inválido';
-            $this->redirectToCabras();
-            return;
-        }
-        
-        $cabra = $this->cabra->getById($id);
-        
-        if (!$cabra) {
-            $_SESSION['error'] = 'Cabra no encontrada';
-            $this->redirectToCabras();
-            return;
-        }
-        
-        $data = ['cabra' => $cabra];
-        $this->loadView('show', $data);
+   public function show() {
+    if (!$this->isLoggedIn()) {
+        $this->redirectToLogin();
+        return;
     }
+
+    $id = $this->getIdFromUrl();
+
+    if (!$id || $id <= 0) {
+        $_SESSION['error'] = 'ID de cabra inválido';
+        $this->redirectToCabras();
+        return;
+    }
+
+    $cabra = $this->cabra->getById($id);
+
+    if (!$cabra) {
+        $_SESSION['error'] = 'Cabra no encontrada';
+        $this->redirectToCabras();
+        return;
+    }
+
+    // 👇 Aquí cargamos el historial de partos
+    $partoModel = new Parto($this->db);
+    $partos = $partoModel->getByCabra($id);
+
+    $data = [
+        'cabra' => $cabra,
+        'partos' => $partos,
+    ];
+
+    $this->loadView('show', $data);
+}
+
     
     // Mostrar formulario de edición
 public function edit() {

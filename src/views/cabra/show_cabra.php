@@ -1,11 +1,17 @@
 <?php
 require_once __DIR__ . '/../../models/HistorialPropiedad.php';
 require_once __DIR__ . '/../../models/Propietarios.php';
+require_once __DIR__ . '/../../models/Parto.php';
 
 $db = (new Database())->getConnection();
+
 $historialModel = new HistorialPropiedad($db);
 $historial_propiedad = $historialModel->getByCabra($cabra['id_cabra']);
+
+$partoModel = new Parto($db);
+$partos = $partoModel->getByCabra($cabra['id_cabra']);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -206,6 +212,47 @@ $historial_propiedad = $historialModel->getByCabra($cabra['id_cabra']);
                                 <p class="text-muted">No hay historial registrado.</p>
                             <?php endif; ?>
                         </div>
+<!-- Sección adicional: Historial de Partos -->
+<div class="info-group">
+    <h3>👶 Historial de Partos</h3>
+
+    <div class="detail-actions">
+        <a href="<?= BASE_URL ?>/partos/<?= $cabra['id_cabra'] ?>/create" class="btn btn-primary">➕ Añadir Parto</a>
+    </div>
+
+    <?php if (!empty($partos)): ?>
+        <div class="info-items">
+            <?php foreach ($partos as $parto): ?>
+                <div class="info-item">
+                    <div>
+                        <strong>Fecha:</strong> <?= date('d/m/Y', strtotime($parto['fecha_parto'])) ?><br>
+                        <strong>Crías:</strong> <?= $parto['numero_crias'] ?><br>
+                        <strong>Peso Total:</strong> <?= $parto['peso_total_crias'] ?? '-' ?> kg<br>
+                        <strong>Tipo:</strong> <?= $parto['tipo_parto'] ?><br>
+                        <strong>Dificultad:</strong> <?= $parto['dificultad'] ?><br>
+                        <strong>Padre:</strong>
+                        <?= !empty($parto['nombre_padre']) ? htmlspecialchars($parto['nombre_padre']) : '<span class="text-muted">No registrado</span>' ?><br>
+                        <?php if (!empty($parto['observaciones'])): ?>
+                            <strong>Obs.:</strong> <?= htmlspecialchars($parto['observaciones']) ?><br>
+                        <?php endif; ?>
+                        <strong>Registrado por:</strong> <?= $parto['nombre_usuario'] ?? '-' ?>
+                    </div>
+
+                    <div style="margin-left:auto;">
+                        <a href="<?= BASE_URL ?>/partos/<?= $parto['id_parto'] ?>/edit" class="btn btn-sm btn-warning">✏️ Editar</a>
+                        <form method="POST" action="<?= BASE_URL ?>/partos/<?= $parto['id_parto'] ?>/delete" style="display:inline-block;" onsubmit="return confirm('¿Eliminar este parto?')">
+                            <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
+                            <button type="submit" class="btn btn-sm btn-danger">🔚️</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="text-muted">No hay partos registrados.</p>
+    <?php endif; ?>
+</div>
+
 
 
                         <!-- Acciones -->
