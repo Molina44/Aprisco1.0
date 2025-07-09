@@ -7,18 +7,18 @@ require_once __DIR__ . '/../src/controllers/UserController.php';
 require_once __DIR__ . '/../src/controllers/CabraController.php';
 require_once __DIR__ . '/../src/controllers/RazasController.php';
 require_once __DIR__ . '/../src/controllers/PropietariosController.php';
+require_once __DIR__ . '/../src/controllers/HistorialPropiedadController.php';
 
-// Obtener URI y método HTTP
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = rtrim($uri, '/');
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Instanciar controladores
 $authController = new AuthController();
 $userController = new UserController();
 $cabraController = new CabraController();
 $razasController = new RazasController();
 $propietariosController = new PropietariosController();
+$historialController = new HistorialPropiedadController();
 
 switch ($uri) {
     case '':
@@ -117,30 +117,50 @@ switch ($uri) {
         $razasController->delete();
         break;
 
-        // CRUD Propietarios
-case '/propietarios':
-    $propietariosController->index();
-    break;
+    // Propietarios
+    case '/propietarios':
+        $propietariosController->index();
+        break;
 
-case '/propietarios/create':
-    $method === 'GET' ? $propietariosController->create() : $propietariosController->store();
-    break;
+    case '/propietarios/create':
+        $method === 'GET' ? $propietariosController->create() : $propietariosController->store();
+        break;
 
-case (preg_match('#^/propietarios/(\d+)$#', $uri, $matches) ? true : false):
-    $_GET['id'] = $matches[1];
-    $propietariosController->show();
-    break;
+    case (preg_match('#^/propietarios/(\d+)$#', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $propietariosController->show();
+        break;
 
-case (preg_match('#^/propietarios/(\d+)/edit$#', $uri, $matches) ? true : false):
-    $_GET['id'] = $matches[1];
-    $method === 'GET' ? $propietariosController->edit() : $propietariosController->update();
-    break;
+    case (preg_match('#^/propietarios/(\d+)/edit$#', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $method === 'GET' ? $propietariosController->edit() : $propietariosController->update();
+        break;
 
-case (preg_match('#^/propietarios/(\d+)/delete$#', $uri, $matches) ? true : false):
-    $_GET['id'] = $matches[1];
-    $propietariosController->delete();
-    break;
+    case (preg_match('#^/propietarios/(\d+)/delete$#', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $propietariosController->delete();
+        break;
 
+    // Historial de Propiedad
+    case (preg_match('#^/historial/(\d+)$#', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $historialController->index();
+        break;
+
+    case (preg_match('#^/historial/(\d+)/create$#', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $method === 'GET' ? $historialController->create() : $historialController->store();
+        break;
+
+    case (preg_match('#^/historial/(\d+)/edit$#', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $method === 'GET' ? $historialController->edit() : $historialController->update();
+        break;
+
+    case (preg_match('#^/historial/(\d+)/delete$#', $uri, $matches) ? true : false):
+        $_GET['id'] = $matches[1];
+        $historialController->delete();
+        break;
 
     default:
         http_response_code(404);

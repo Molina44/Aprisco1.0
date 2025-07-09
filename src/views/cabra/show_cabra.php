@@ -1,11 +1,22 @@
+<?php
+require_once __DIR__ . '/../../models/HistorialPropiedad.php';
+require_once __DIR__ . '/../../models/Propietarios.php';
+
+$db = (new Database())->getConnection();
+$historialModel = new HistorialPropiedad($db);
+$historial_propiedad = $historialModel->getByCabra($cabra['id_cabra']);
+?>
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalles de <?php echo e($cabra['nombre']); ?> - <?php echo SITE_NAME; ?></title>
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
 </head>
+
 <body>
     <div class="container">
         <header class="dashboard-header">
@@ -14,7 +25,7 @@
                 <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-secondary">← Volver a Lista</a>
                 <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit" class="btn btn-warning">✏️ Editar</a>
                 <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">Dashboard</a>
-               
+
             </nav>
         </header>
 
@@ -22,13 +33,15 @@
             <!-- Mensajes de éxito o error -->
             <?php if (isset($_SESSION['success'])): ?>
                 <div class="alert alert-success">
-                    <?php echo e($_SESSION['success']); unset($_SESSION['success']); ?>
+                    <?php echo e($_SESSION['success']);
+                    unset($_SESSION['success']); ?>
                 </div>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['error'])): ?>
                 <div class="alert alert-error">
-                    <?php echo e($_SESSION['error']); unset($_SESSION['error']); ?>
+                    <?php echo e($_SESSION['error']);
+                    unset($_SESSION['error']); ?>
                 </div>
             <?php endif; ?>
 
@@ -37,8 +50,8 @@
                     <!-- Foto de la cabra -->
                     <div class="cabra-photo-section">
                         <?php if (!empty($cabra['foto'])): ?>
-                            <img src="<?php echo BASE_URL; ?>/uploads/<?php echo e($cabra['foto']); ?>" 
-                                 alt="<?php echo e($cabra['nombre']); ?>" class="cabra-detail-image">
+                            <img src="<?php echo BASE_URL; ?>/uploads/<?php echo e($cabra['foto']); ?>"
+                                alt="<?php echo e($cabra['nombre']); ?>" class="cabra-detail-image">
                         <?php else: ?>
                             <div class="no-photo-large">🐐</div>
                         <?php endif; ?>
@@ -64,26 +77,26 @@
                                             <?php echo $cabra['sexo'] === 'MACHO' ? '♂' : '♀'; ?> <?php echo e($cabra['sexo']); ?>
                                         </span>
                                     </div>
-                                    
+
                                     <?php if (!empty($cabra['fecha_nacimiento'])): ?>
                                         <div class="info-item">
                                             <strong>Fecha de Nacimiento:</strong>
                                             <?php echo date('d/m/Y', strtotime($cabra['fecha_nacimiento'])); ?>
-                                            <small>(<?php 
-                                                $fecha_nac = new DateTime($cabra['fecha_nacimiento']);
-                                                $hoy = new DateTime();
-                                                $edad = $hoy->diff($fecha_nac);
-                                                echo $edad->y . ' años, ' . $edad->m . ' meses';
-                                            ?>)</small>
+                                            <small>(<?php
+                                                    $fecha_nac = new DateTime($cabra['fecha_nacimiento']);
+                                                    $hoy = new DateTime();
+                                                    $edad = $hoy->diff($fecha_nac);
+                                                    echo $edad->y . ' años, ' . $edad->m . ' meses';
+                                                    ?>)</small>
                                         </div>
                                     <?php endif; ?>
-                                    
+
                                     <?php if (!empty($cabra['color'])): ?>
                                         <div class="info-item">
                                             <strong>Color:</strong> <?php echo e($cabra['color']); ?>
                                         </div>
                                     <?php endif; ?>
-                                    
+
                                     <?php if (!empty($cabra['raza_nombre'])): ?>
                                         <div class="info-item">
                                             <strong>Raza:</strong> <?php echo e($cabra['raza_nombre']); ?>
@@ -106,7 +119,7 @@
                                             <span class="text-muted">No registrada</span>
                                         <?php endif; ?>
                                     </div>
-                                    
+
                                     <div class="info-item">
                                         <strong>Padre:</strong>
                                         <?php if (!empty($cabra['padre_nombre'])): ?>
@@ -143,7 +156,7 @@
                                         <strong>Fecha de Registro:</strong>
                                         <?php echo date('d/m/Y H:i:s', strtotime($cabra['fecha_registro'])); ?>
                                     </div>
-                                    
+
                                     <?php if (!empty($cabra['creado_por_nombre'])): ?>
                                         <div class="info-item">
                                             <strong>Registrado por:</strong> <?php echo e($cabra['creado_por_nombre']); ?>
@@ -153,17 +166,59 @@
                             </div>
                         </div>
 
+
+
+                        <!-- Sección adicional: Historial de Propiedad -->
+                        <div class="info-group">
+                            <h3>📜 Historial de Propiedad</h3>
+
+                            <div class="detail-actions">
+                                <a href="<?= BASE_URL ?>/historial/<?= $cabra['id_cabra'] ?>/create" class="btn btn-primary">➕ Añadir Historial</a>
+                            </div>
+
+                            <?php if (!empty($historial_propiedad)): ?>
+                                <div class="info-items">
+                                    <?php foreach ($historial_propiedad as $item): ?>
+                                        <div class="info-item">
+                                            <div class="info-group">
+                                                <strong>Propietario:</strong> <?= htmlspecialchars($item['nombre_propietario']) ?><br>
+                                                <strong>Desde:</strong> <?= date('d/m/Y', strtotime($item['fecha_inicio'])) ?><br>
+                                                <strong>Hasta:</strong> <?= $item['fecha_fin'] ? date('d/m/Y', strtotime($item['fecha_fin'])) : 'Actual' ?><br>
+                                                <?php if (!empty($item['motivo_cambio'])): ?>
+                                                    <strong>Motivo:</strong> <?= htmlspecialchars($item['motivo_cambio']) ?><br>
+                                                <?php endif; ?>
+                                                <?php if (!empty($item['precio_transaccion'])): ?>
+                                                    <strong>Precio:</strong> $<?= number_format($item['precio_transaccion'], 2) ?><br>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <div style="margin-left:auto;">
+                                                <a href="<?= BASE_URL ?>/historial/<?= $item['id_historial'] ?>/edit" class="btn btn-sm btn-warning">✏️ Editar</a>
+                                                <form method="POST" action="<?= BASE_URL ?>/historial/<?= $item['id_historial'] ?>/delete" style="display:inline-block;" onsubmit="return confirm('¿Eliminar este historial?')">
+                                                    <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
+                                                    <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-muted">No hay historial registrado.</p>
+                            <?php endif; ?>
+                        </div>
+
+
                         <!-- Acciones -->
                         <div class="detail-actions">
-                            <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit" 
-                               class="btn btn-warning">✏️ Editar Cabra</a>
-                                <form method="POST" action="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete" 
-          style="display: inline-block;" 
-          onsubmit="return confirm('¿Estás seguro de eliminar la cabra <?php echo e($cabra['nombre']); ?>? Esta acción la marcará como INACTIVA.')">
-        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-        <input type="hidden" name="id" value="<?php echo $cabra['id_cabra']; ?>">
-        <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
-    </form>
+                            <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit"
+                                class="btn btn-warning">✏️ Editar Cabra</a>
+                            <form method="POST" action="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete"
+                                style="display: inline-block;"
+                                onsubmit="return confirm('¿Estás seguro de eliminar la cabra <?php echo e($cabra['nombre']); ?>? Esta acción la marcará como INACTIVA.')">
+                                <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                <input type="hidden" name="id" value="<?php echo $cabra['id_cabra']; ?>">
+                                <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                            </form>
                             <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-secondary">← Volver a Lista</a>
                         </div>
                     </div>
@@ -181,7 +236,7 @@
         .cabra-detail-card {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -325,21 +380,22 @@
                 grid-template-columns: 1fr;
                 margin: 10px;
             }
-            
+
             .cabra-photo-section {
                 min-height: 250px;
             }
-            
+
             .info-header {
                 flex-direction: column;
                 gap: 15px;
                 text-align: center;
             }
-            
+
             .detail-actions {
                 flex-direction: column;
             }
         }
     </style>
 </body>
+
 </html>

@@ -1,9 +1,9 @@
 <?php
 // src/controllers/HistorialPropiedadController.php
 require_once __DIR__ . '/../models/HistorialPropiedad.php';
-require_once __DIR__ . '/../models/Propietarios.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../models/Propietarios.php';
 
 class HistorialPropiedadController {
     private $model;
@@ -44,7 +44,7 @@ class HistorialPropiedadController {
     public function index() {
         if (!$this->isLoggedIn()) $this->redirectToLogin();
         $id = $this->getIdFromUrl();
-        $data = ['historial' => $this->model->getById($id), 'id_cabra' => $id];
+        $data = ['historial' => $this->model->getByCabra($id, true), 'id_cabra' => $id];
         $this->loadView('index', $data);
     }
 
@@ -52,8 +52,8 @@ class HistorialPropiedadController {
         if (!$this->isLoggedIn()) $this->redirectToLogin();
         $id = $this->getIdFromUrl();
         $csrf_token = generateCSRFToken();
-        $propietarioModel = new Propietario($this->db);
-        $propietarios = $propietarioModel->getAll();
+        $propModel = new Propietario($this->db);
+        $propietarios = $propModel->getAll();
         $this->loadView('create_edit', [
             'csrf_token' => $csrf_token,
             'id_cabra' => $id,
@@ -96,8 +96,8 @@ class HistorialPropiedadController {
         $id = $this->getIdFromUrl();
         $registro = $this->model->getById($id);
         $csrf_token = generateCSRFToken();
-        $propietarioModel = new Propietario($this->db);
-        $propietarios = $propietarioModel->getAll();
+        $propModel = new Propietario($this->db);
+        $propietarios = $propModel->getAll();
         $this->loadView('create_edit', [
             'historial' => $registro,
             'csrf_token' => $csrf_token,
@@ -177,4 +177,11 @@ class HistorialPropiedadController {
             $this->redirectToHistorial();
         }
     }
+}
+
+// Helper function for select
+function getAllPropietarios() {
+    $db = (new Database())->getConnection();
+    $model = new Propietario($db);
+    return $model->getAll();
 }

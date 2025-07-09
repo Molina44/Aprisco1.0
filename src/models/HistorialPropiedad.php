@@ -27,6 +27,18 @@ class HistorialPropiedad {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+    public function getByCabra($id_cabra) {
+    $sql = "SELECT h.*, p.nombre as nombre_propietario
+            FROM historial_propiedad h
+            LEFT JOIN propietarios p ON h.id_propietario = p.id_propietario
+            WHERE h.id_cabra = :id_cabra
+            ORDER BY h.fecha_inicio DESC";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':id_cabra', $id_cabra, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     public function create($data) {
         $sql = "INSERT INTO historial_propiedad (id_cabra, id_propietario, fecha_inicio, fecha_fin, motivo_cambio, precio_transaccion)
