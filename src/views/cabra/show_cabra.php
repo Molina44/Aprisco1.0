@@ -337,6 +337,37 @@ $controles_sanitarios = $controlSanitarioModel->getByCabra($cabra['id_cabra']);
     <?php endif; ?>
 </div>
 
+<!-- Sección adicional: Documentos Adjuntos -->
+<div class="info-group">
+    <h3>📂 Documentos Adjuntos</h3>
+    <div class="detail-actions">
+        <a href="<?= BASE_URL ?>/documentos/<?= $cabra['id_cabra'] ?>/create" class="btn btn-primary">➕ Subir Documento</a>
+    </div>
+
+    <?php if (!empty($documentos_cabra)): ?>
+        <div class="info-items">
+<?php foreach ($documentos_cabra as $doc): ?>
+    <div class="info-item">
+        <div>
+            <strong>Tipo:</strong> <?= htmlspecialchars($doc['tipo_documento']) ?><br>
+ <strong>Subido por:</strong> <?= htmlspecialchars($doc['nombre_usuario']) ?><br>
+            <strong>Fecha:</strong> <?= date('d/m/Y H:i', strtotime($doc['fecha_subida'])) ?>
+        </div>
+        <div style="margin-left:auto;">
+            <form method="POST" action="<?= BASE_URL ?>/documentos/<?= $doc['id_documento'] ?>/delete"
+                  onsubmit="return confirm('¿Eliminar este documento?')" style="display:inline-block;">
+                <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
+                <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+            </form>
+        </div>
+    </div>
+<?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="text-muted">No hay documentos adjuntos.</p>
+    <?php endif; ?>
+</div>
+
 
 
                         <!-- Acciones -->
