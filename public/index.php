@@ -9,6 +9,7 @@ require_once __DIR__ . '/../src/controllers/RazasController.php';
 require_once __DIR__ . '/../src/controllers/PropietariosController.php';
 require_once __DIR__ . '/../src/controllers/HistorialPropiedadController.php';
 require_once __DIR__ . '/../src/controllers/PartosController.php';
+require_once __DIR__ . '/../src/controllers/EventosReproductivosController.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = rtrim($uri, '/');
@@ -21,6 +22,7 @@ $razasController = new RazasController();
 $propietariosController = new PropietariosController();
 $historialController = new HistorialPropiedadController();
 $partosController = new PartosController();
+$eventoController = new EventoReproductivoController();
 
 switch ($uri) {
     case '':
@@ -179,6 +181,28 @@ case (preg_match('#^/partos/(\d+)/delete$#', $uri, $matches) ? true : false):
     $_GET['id'] = $matches[1];
     $partosController->delete();
     break;
+
+    // Eventos Reproductivos
+case (preg_match('#^/eventos/(\d+)$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $eventoController->index();
+    break;
+
+case (preg_match('#^/eventos/(\d+)/create$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $method === 'GET' ? $eventoController->create() : $eventoController->store();
+    break;
+
+case (preg_match('#^/eventos/(\d+)/edit$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $method === 'GET' ? $eventoController->edit() : $eventoController->update();
+    break;
+
+case (preg_match('#^/eventos/(\d+)/delete$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $eventoController->delete();
+    break;
+
 
 
     default:

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../models/HistorialPropiedad.php';
 require_once __DIR__ . '/../../models/Propietarios.php';
 require_once __DIR__ . '/../../models/Parto.php';
+require_once __DIR__ . '/../../models/EventoReproductivo.php';
 
 $db = (new Database())->getConnection();
 
@@ -9,9 +10,12 @@ $historialModel = new HistorialPropiedad($db);
 $historial_propiedad = $historialModel->getByCabra($cabra['id_cabra']);
 
 $partoModel = new Parto($db);
-$partos = $partoModel->getByCabra($cabra['id_cabra']);
-?>
+$partos = $partoModel->getByCabra($cabra['id_cabra']); 
+$padres = $partoModel->getPadresDisponibles();
 
+$eventoModel = new EventoReproductivo($db);
+$eventos_reproductivos = $eventoModel->getByCabra($cabra['id_cabra']);
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -250,6 +254,44 @@ $partos = $partoModel->getByCabra($cabra['id_cabra']);
         </div>
     <?php else: ?>
         <p class="text-muted">No hay partos registrados.</p>
+    <?php endif; ?>
+</div>
+
+
+<!-- Sección adicional: Eventos Reproductivos -->
+<div class="info-group">
+    <h3>📅 Eventos Reproductivos</h3>
+    <div class="detail-actions">
+        <a href="<?= BASE_URL ?>/eventos/<?= $cabra['id_cabra'] ?>/create" class="btn btn-primary">➕ Añadir Evento</a>
+    </div>
+
+    <?php if (!empty($eventos_reproductivos)): ?>
+        <div class="info-items">
+            <?php foreach ($eventos_reproductivos as $evento): ?>
+                <div class="info-item">
+                    <div>
+                        <strong>Fecha:</strong> <?= date('d/m/Y', strtotime($evento['fecha_evento'])) ?><br>
+                        <strong>Tipo:</strong> <?= $evento['tipo_evento'] ?><br>
+                        <strong>Semental:</strong>
+                        <?= !empty($evento['nombre_semental']) ? htmlspecialchars($evento['nombre_semental']) : '<span class="text-muted">No registrado</span>' ?><br>
+                        <?php if (!empty($evento['observaciones'])): ?>
+                            <strong>Obs.:</strong> <?= htmlspecialchars($evento['observaciones']) ?><br>
+                        <?php endif; ?>
+                        <strong>Registrado por:</strong> <?= $evento['nombre_usuario'] ?? '-' ?>
+                    </div>
+
+                    <div style="margin-left:auto;">
+                        <a href="<?= BASE_URL ?>/eventos/<?= $evento['id_evento'] ?>/edit" class="btn btn-sm btn-warning">✏️ Editar</a>
+                        <form method="POST" action="<?= BASE_URL ?>/eventos/<?= $evento['id_evento'] ?>/delete" style="display:inline-block;" onsubmit="return confirm('¿Eliminar este evento?')">
+                            <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
+                            <button type="submit" class="btn btn-sm btn-danger">🗑️</button>
+                        </form>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p class="text-muted">No hay eventos registrados.</p>
     <?php endif; ?>
 </div>
 
