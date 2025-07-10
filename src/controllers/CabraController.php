@@ -3,6 +3,7 @@ require_once __DIR__ . '/../models/Parto.php';
 require_once __DIR__ . '/../models/Cabras.php';
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../includes/functions.php';
+require_once __DIR__ . '/../services/PDFService.php';
 
 class CabraController {
     private $cabra;
@@ -51,6 +52,14 @@ class CabraController {
         header("Location: " . BASE_URL . "/cabras/$id");
         exit();
     }
+
+     public function generarPDF() {
+    if (!isset($_GET['id'])) return;
+
+    $id = (int)$_GET['id'];
+    $pdfService = new PDFService($this->db);
+    $pdfService->generarFichaCabra($id);
+}
     
     // NUEVA FUNCIÓN: Extraer ID de la URL
     private function getIdFromUrl() {
@@ -506,6 +515,8 @@ public function edit() {
         $_SESSION['error'] = 'Error al subir la foto';
         return null;
     }
+
+
     
     private function loadView($view, $data = []) {
         extract($data);

@@ -1,0 +1,20 @@
+{
+    "name": "molina44/aprisco",
+    "description": "Sistema de gestión de cabras Aprisco.",
+    "type": "project",
+    "require": {
+        "setasign/fpdf": "^1.8"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Molina44\\Aprisco\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jorge Enrique",
+            "email": "jorgenunez4m@gmail.com"
+        }
+    ]
+}

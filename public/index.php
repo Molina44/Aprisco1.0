@@ -102,6 +102,12 @@ switch ($uri) {
         $cabraController->stats();
         break;
 
+        case (preg_match('#^/cabras/(\d+)/pdf$#', $uri, $matches) ? true : false):
+    $_GET['id'] = $matches[1];
+    $cabraController->generarPDF();
+    break;
+
+
     // Razas
     case '/razas':
         $razasController->index();

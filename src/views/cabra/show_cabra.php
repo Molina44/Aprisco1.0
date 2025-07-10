@@ -379,6 +379,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
     <?php endif; ?>
 </div>
 
+<a href="<?= BASE_URL ?>/cabras/<?= $cabra['id_cabra'] ?>/pdf" target="_blank" class="btn btn-info">📄 Generar PDF</a>
 
 
                         <!-- Acciones -->

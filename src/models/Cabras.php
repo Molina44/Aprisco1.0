@@ -6,6 +6,34 @@ class Cabra {
     public function __construct($database) {
         $this->db = $database;
     }
+
+        public function getByIdFull($id) {
+    $sql = "
+        SELECT 
+            c.*, 
+            r.nombre AS raza_nombre,
+            p.nombre AS propietario_nombre,
+            madre.nombre AS nombre_madre,
+            madre.foto AS foto_madre,
+            padre.nombre AS nombre_padre,
+            padre.foto AS foto_padre,
+            u1.nombre AS creado_por_nombre,
+            u2.nombre AS modificado_por_nombre
+        FROM cabras c
+        LEFT JOIN razas r ON c.id_raza = r.id_raza
+        LEFT JOIN propietarios p ON c.id_propietario_actual = p.id_propietario
+        LEFT JOIN cabras madre ON c.madre = madre.id_cabra
+        LEFT JOIN cabras padre ON c.padre = padre.id_cabra
+        LEFT JOIN usuarios u1 ON c.creado_por = u1.id
+        LEFT JOIN usuarios u2 ON c.modificado_por = u2.id
+        WHERE c.id_cabra = :id";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     
     // Crear una nueva cabra
     public function create($data) {
