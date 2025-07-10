@@ -189,7 +189,7 @@ public function create() {
     }
     
     // Mostrar detalles de una cabra
-   public function show() {
+public function show() {
     if (!$this->isLoggedIn()) {
         $this->redirectToLogin();
         return;
@@ -211,14 +211,17 @@ public function create() {
         return;
     }
 
-    // 👇 Aquí cargamos el historial de partos
     $partoModel = new Parto($this->db);
     $partos = $partoModel->getByCabra($id);
 
-    $data = [
-        'cabra' => $cabra,
-        'partos' => $partos,
-    ];
+    // 👇 Nuevo: árbol genealógico
+$genealogia = $this->cabra->getAncestros($id);
+
+$data = [
+    'cabra' => $cabra,
+    'partos' => $partos,
+    'genealogia' => $genealogia
+];
 
     $this->loadView('show', $data);
 }

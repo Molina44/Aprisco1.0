@@ -399,9 +399,327 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
                 </div>
             </div>
         </main>
+
+
+<div class="info-group">
+<?php
+// Función PHP mejorada para el árbol genealógico
+function renderTreeAsc($node, $gen = 1) {
+    if (!$node || $gen > 4) return;
+    
+    $sexoClass = strtolower($node['sexo']) === 'macho' ? 'macho' : 'hembra';
+    $iconClass = strtolower($node['sexo']) === 'macho' ? 'fas fa-mars' : 'fas fa-venus';
+    
+    echo "<div class='gen-nivel'>";
+    echo "<div class='gen-hijos'>";
+    
+    // Renderizar hijos primero (padres)
+    if (isset($node['padre'])) renderTreeAsc($node['padre'], $gen + 1);
+    if (isset($node['madre'])) renderTreeAsc($node['madre'], $gen + 1);
+    
+    echo "</div>";
+    
+    if ($gen < 4) {
+        echo "<div class='gen-connector'></div>";
+    }
+    
+    echo "<div class='cabra-box {$sexoClass}'>";
+    echo "<div class='gen-badge'>Gen {$gen}</div>";
+    
+    // Icono especial para el individuo principal
+    if ($gen === 1) {
+        echo "<i class='fas fa-star animal-icon' style='color: #f39c12;'></i>";
+    } else {
+        echo "<i class='{$iconClass} animal-icon'></i>";
+    }
+    
+    echo "<div class='animal-name'>" . htmlspecialchars($node['nombre']) . "</div>";
+    echo "<div class='animal-info'>";
+    echo "<i class='{$iconClass}'></i>";
+    echo "<span>" . ucfirst($node['sexo']) . "</span>";
+    echo "</div>";
+    
+    // Imagen
+    if (!empty($node['foto'])) {
+        $img = BASE_URL . "/uploads/" . htmlspecialchars($node['foto']);
+        echo "<img src='{$img}' alt='Foto' class='animal-photo'>";
+    } else {
+        // Placeholder si no hay foto
+        $placeholder = strtoupper(substr($node['nombre'], 0, 2));
+        $color = $sexoClass === 'macho' ? '3498db' : 'e91e63';
+        echo "<img src='https://via.placeholder.com/60x60/{$color}/ffffff?text={$placeholder}' alt='Foto' class='animal-photo'>";
+    }
+    
+    echo "</div>";
+    echo "</div>";
+}
+?>
+
+<!-- HTML Structure -->
+<div class="container">
+    <div class="header">
+        <h1>
+            <i class="fas fa-sitemap"></i>
+            Árbol Genealógico
+        </h1>
+        <p>Linaje familiar hasta 4 generaciones</p>
+    </div>
+
+    <div class="tree-container">
+        <div class="genealogia-tree-asc">
+            <?php renderTreeAsc($genealogia); ?>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color macho"></div>
+                <span><i class="fas fa-mars"></i> Macho</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color hembra"></div>
+                <span><i class="fas fa-venus"></i> Hembra</span>
+            </div>
+            <div class="legend-item">
+                <i class="fas fa-star" style="color: #f39c12;"></i>
+                <span>Individuo Principal</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
     </div>
 
     <style>
+/* Importar Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.header p {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.tree-container {
+    padding: 40px 20px;
+    overflow-x: auto;
+}
+
+.genealogia-tree-asc {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 50px;
+    position: relative;
+    min-width: 800px;
+}
+
+.gen-nivel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.gen-hijos {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.gen-connector {
+    width: 3px;
+    height: 30px;
+    background: linear-gradient(to bottom, #3498db, #2980b9);
+    margin: 10px 0;
+    border-radius: 2px;
+    position: relative;
+}
+
+.gen-connector::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: #3498db;
+    border-radius: 50%;
+}
+
+.cabra-box {
+    background: white;
+    border: 2px solid #e0e0e0;
+    padding: 20px;
+    border-radius: 15px;
+    min-width: 180px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cabra-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.cabra-box.macho {
+    border-color: #3498db;
+    background: linear-gradient(135deg, #f8fbff 0%, #e3f2fd 100%);
+}
+
+.cabra-box.hembra {
+    border-color: #e91e63;
+    background: linear-gradient(135deg, #fff8fb 0%, #fce4ec 100%);
+}
+
+.gen-badge {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.animal-icon {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.macho .animal-icon {
+    color: #3498db;
+}
+
+.hembra .animal-icon {
+    color: #e91e63;
+}
+
+.animal-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+
+.animal-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 8px;
+    color: #7f8c8d;
+    font-size: 0.9em;
+}
+
+.animal-photo {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ecf0f1;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.animal-photo:hover {
+    transform: scale(1.1);
+    border-color: #3498db;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(236, 240, 241, 0.5);
+    border-radius: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9em;
+    color: #2c3e50;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid;
+}
+
+.legend-color.macho {
+    background: linear-gradient(135deg, #f8fbff 0%, #e3f2fd 100%);
+    border-color: #3498db;
+}
+
+.legend-color.hembra {
+    background: linear-gradient(135deg, #fff8fb 0%, #fce4ec 100%);
+    border-color: #e91e63;
+}
+
+@media (max-width: 768px) {
+    .gen-hijos {
+        gap: 30px;
+    }
+    
+    .cabra-box {
+        min-width: 150px;
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 2em;
+    }
+    
+    .legend {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+
         .cabra-detail-container {
             max-width: 1000px;
             margin: 20px auto;

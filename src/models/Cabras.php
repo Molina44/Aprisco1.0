@@ -7,6 +7,7 @@ class Cabra {
         $this->db = $database;
     }
 
+
         public function getByIdFull($id) {
     $sql = "
         SELECT 
@@ -330,5 +331,30 @@ public function getBySex($sex) {
     }
     
     return array_unique($ancestors);
+
 }
+
+// src/models/Cabras.php
+
+public function getAncestros($id, $generation = 1, $maxGenerations = 4) {
+    if ($generation > $maxGenerations || !$id) return [];
+
+    $stmt = $this->db->prepare("SELECT * FROM cabras WHERE id_cabra = :id");
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $cabra = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$cabra) return [];
+
+    return [
+        'id' => $cabra['id_cabra'],
+        'nombre' => $cabra['nombre'],
+        'sexo' => $cabra['sexo'],
+        'foto' => $cabra['foto'],
+        'madre' => $this->getAncestros($cabra['madre'], $generation + 1, $maxGenerations),
+        'padre' => $this->getAncestros($cabra['padre'], $generation + 1, $maxGenerations),
+    ];
+}
+
+
 }
