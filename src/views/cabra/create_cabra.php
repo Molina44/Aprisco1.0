@@ -14,11 +14,13 @@ $csrf_token = $_SESSION['csrf_token'];
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
 </head>
 <body>
-    <?php include __DIR__ . '/../../../includes/sidebar.php'; ?>
+  <?php include __DIR__ . '/../../../includes/sidebar.php'; ?>
     <div class="container">
+          
         <header class="dashboard-header">
-            <h1>🐐 Registrar Nueva Cabra</h1>
-        <main class="main-content">
+            
+            
+        <main class="main-content"><h1>🐐 Registrar Nueva Cabra</h1>
             <!-- Mensajes de error -->
             <?php if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])): ?>
                 <div class="alert alert-error">

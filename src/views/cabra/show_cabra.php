@@ -4,6 +4,9 @@ require_once __DIR__ . '/../../models/Propietarios.php';
 require_once __DIR__ . '/../../models/Parto.php';
 require_once __DIR__ . '/../../models/EventoReproductivo.php';
 require_once __DIR__ . '/../../models/ControlSanitario.php';
+require_once __DIR__ . '/../../models/DocumentosCabras.php';
+
+
 
 $db = (new Database())->getConnection();
 
@@ -19,6 +22,9 @@ $eventos_reproductivos = $eventoModel->getByCabra($cabra['id_cabra']);
 
 $controlSanitarioModel = new ControlSanitario($db);
 $controles_sanitarios = $controlSanitarioModel->getByCabra($cabra['id_cabra']);
+
+$documentosModel = new DocumentosCabras($db);
+$documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
 ?>
 
 <!DOCTYPE html>
@@ -32,6 +38,7 @@ $controles_sanitarios = $controlSanitarioModel->getByCabra($cabra['id_cabra']);
 </head>
 
 <body>
+    <?php include __DIR__ . '/../../../includes/sidebar.php'; ?>
     <div class="container">
         <header class="dashboard-header">
             <h1>🐐 <?php echo e($cabra['nombre']); ?></h1>
@@ -349,6 +356,10 @@ $controles_sanitarios = $controlSanitarioModel->getByCabra($cabra['id_cabra']);
 <?php foreach ($documentos_cabra as $doc): ?>
     <div class="info-item">
         <div>
+            <strong>Archivo:</strong>
+<a href="<?= BASE_URL ?>/uploads/<?= $doc['ruta_archivo'] ?>" download>
+    <?= basename($doc['ruta_archivo']) ?> ⬇️
+</a><br>
             <strong>Tipo:</strong> <?= htmlspecialchars($doc['tipo_documento']) ?><br>
  <strong>Subido por:</strong> <?= htmlspecialchars($doc['nombre_usuario']) ?><br>
             <strong>Fecha:</strong> <?= date('d/m/Y H:i', strtotime($doc['fecha_subida'])) ?>

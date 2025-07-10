@@ -7,13 +7,10 @@
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
 </head>
 <body>
+     <?php include __DIR__ . '/../../../includes/sidebar.php'; ?>
     <div class="container">
         <header class="dashboard-header">
             <h1>Editar Perfil</h1>
-            <nav>
-                <a href="<?php echo BASE_URL; ?>/profile" class="btn btn-secondary">← Volver al Perfil</a>
-                <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">Dashboard</a>
-            </nav>
         </header>
 
         <?php showMessages(); ?>
