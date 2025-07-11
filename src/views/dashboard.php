@@ -5,14 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - <?php echo SITE_NAME; ?></title>
     <link rel="stylesheet" href="<?php  BASE_URL; ?>/assets/css/style.css">
+    <link rel="shortcut icon" href="<?php echo BASE_URL; ?>/assets/img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <!-- Botón de menú móvil -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="fas fa-bars"></i>
-    </button>
-    
     <!-- Incluir sidebar -->
     <?php include __DIR__ . '/../../includes/sidebar.php'; ?>
     
@@ -55,36 +51,5 @@
             </main>
         </div>
     </div>
-
-    <script>
-        // Toggle sidebar en móviles
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('mainSidebar').classList.toggle('active');
-        });
-        
-        document.getElementById('closeSidebar').addEventListener('click', function() {
-            document.getElementById('mainSidebar').classList.remove('active');
-        });
-        
-        // Activar submenús
-        const menuItems = document.querySelectorAll('.sidebar-nav > ul > li');
-        menuItems.forEach(item => {
-            if (item.classList.contains('active')) {
-                const submenu = item.querySelector('.submenu');
-                if (submenu) {
-                    submenu.style.display = 'block';
-                }
-            }
-            
-            item.addEventListener('click', function(e) {
-                if (this.querySelector('.submenu')) {
-                    e.preventDefault();
-                    this.classList.toggle('active');
-                    const submenu = this.querySelector('.submenu');
-                    submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
-                }
-            });
-        });
-    </script>
 </body>
 </html>

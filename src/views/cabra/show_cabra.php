@@ -42,12 +42,6 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
     <div class="container">
         <header class="dashboard-header">
             <h1>🐐 <?php echo e($cabra['nombre']); ?></h1>
-            <nav>
-                <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-secondary">← Volver a Lista</a>
-                <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit" class="btn btn-warning">✏️ Editar</a>
-                <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">Dashboard</a>
-
-            </nav>
         </header>
 
         <main class="main-content">
@@ -182,17 +176,17 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
 
                         <!-- Acciones -->
                         <div class="detail-actions">
-                            <a href="<?= BASE_URL ?>/cabras/<?= $cabra['id_cabra'] ?>/pdf" target="_blank" class="btn btn-info">📄 Generar PDF</a>
+                            <a href="<?= BASE_URL ?>/cabras/<?= $cabra['id_cabra'] ?>/pdf" target="_blank" class="btn btn-info">Generar PDF</a>
                             <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit"
-                                class="btn btn-warning">✏️ Editar Cabra</a>
+                                class="btn btn-warning"> Editar Cabra</a>
                             <form method="POST" action="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete"
                                 style="display: inline-block;"
                                 onsubmit="return confirm('¿Estás seguro de eliminar la cabra <?php echo e($cabra['nombre']); ?>? Esta acción la marcará como INACTIVA.')">
                                 <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                 <input type="hidden" name="id" value="<?php echo $cabra['id_cabra']; ?>">
-                                <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                                <button type="submit"   class="btn btn-warning">Eliminar  </button>
                             </form>
-                            <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-secondary">← Volver a Lista</a>
+                   
                         </div>
                     </div>
                 </div>
@@ -368,7 +362,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
         </div>
 
 
-        <div class="info-group">
+      
             <?php
             // Función PHP mejorada para el árbol genealógico
             function renderTreeAsc($node, $gen = 1)
@@ -424,7 +418,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
             ?>
 
             <!-- HTML Structure -->
-            <div class="container">
+           
                 <div class="header">
                     <h1>
                         <i class="fas fa-sitemap"></i>
@@ -453,11 +447,11 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
                         </div>
                     </div>
                 </div>
-            </div>
+       
 
 
 
-        </div>
+
 
         <style>
             /* Importar Font Awesome */
@@ -474,7 +468,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
             }
 
             .header {
-                background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+                background: linear-gradient(135deg, #260F01, #583619 );
                 color: white;
                 padding: 30px;
                 text-align: center;
@@ -526,7 +520,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
             .gen-connector {
                 width: 3px;
                 height: 30px;
-                background: linear-gradient(to bottom, #3498db, #2980b9);
+                background: linear-gradient(to bottom,  #260F01, #583619 );
                 margin: 10px 0;
                 border-radius: 2px;
                 position: relative;
@@ -540,7 +534,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
                 transform: translateX(-50%);
                 width: 10px;
                 height: 10px;
-                background: #3498db;
+                background: #583619  ;
                 border-radius: 50%;
             }
 
@@ -577,7 +571,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
                 top: -10px;
                 left: 50%;
                 transform: translateX(-50%);
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                background: linear-gradient(135deg,#260F01, #583619 100%);
                 color: white;
                 padding: 5px 15px;
                 border-radius: 20px;

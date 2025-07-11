@@ -193,6 +193,7 @@ class Cabra {
             return false;
         }
     }
+
     
     // Buscar cabras
 public function search($term, $includeInactive = false) {

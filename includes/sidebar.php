@@ -1,15 +1,28 @@
 <!-- src/views/includes/sidebar.php -->
+<link rel="stylesheet" href="<?php echo BASE_URL; ?>/assets/css/style.css">
+
+<!-- Botón hamburguesa para móvil -->
+<button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+</button>
+
+<!-- Overlay para cerrar en móvil -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <aside class="sidebar" id="mainSidebar">
     <div class="sidebar-header">
         <div class="logo-container">
             <div class="logo-icon">
                 <img src="<?php echo BASE_URL; ?>/assets/img/logo.png" alt="Logo" class="logo-image">
-
             </div>
-
         </div>
+        <!-- Botón cerrar para móvil -->
+        <button class="mobile-close-btn" id="mobileCloseBtn">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-
 
     <nav class="sidebar-nav">
         <div class="nav-section">
@@ -31,7 +44,7 @@
             <h4 class="nav-title">Gestión</h4>
             <ul class="nav-list">
                 <li class="nav-item has-submenu <?php echo (strpos($_SERVER['REQUEST_URI'], '/cabras') !== false) ? 'active expanded' : ''; ?>">
-                    <a href="<?php echo BASE_URL; ?>/cabras" class="nav-link">
+                    <a href="<?php echo BASE_URL; ?>/cabras" class="nav-link submenu-toggle">
                         <div class="nav-icon">
                             <i class="fas fa-list-ul"></i>
                         </div>
@@ -42,6 +55,14 @@
                         <div class="nav-indicator"></div>
                     </a>
                     <ul class="submenu">
+                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/cabras') !== false) ? 'active' : ''; ?>">
+                            <a href="<?php echo BASE_URL; ?>/cabras" class="submenu-link">
+                                <div class="submenu-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <span class="submenu-text">Cabras</span>
+                            </a>
+                        </li>
                         <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/cabras/create') !== false) ? 'active' : ''; ?>">
                             <a href="<?php echo BASE_URL; ?>/cabras/create" class="submenu-link">
                                 <div class="submenu-icon">
@@ -50,76 +71,64 @@
                                 <span class="submenu-text">Nueva Cabra</span>
                             </a>
                         </li>
-                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/cabras') !== false) ? 'active' : ''; ?>">
-                            <a href="<?php echo BASE_URL; ?>/cabras" class="submenu-link">
-                                <div class="submenu-icon">
-                                    <i class="fas fa-chart-line"></i>
-                                </div>
-                                <span class="submenu-text">cabras</span>
-                            </a>
-                        </li>
-                      
                     </ul>
                 </li>
 
+                <!-- Menú Razas COMPLETO -->
+                <li class="nav-item has-submenu <?php echo (strpos($_SERVER['REQUEST_URI'], '/razas') !== false) ? 'active expanded' : ''; ?>">
+                    <a href="<?php echo BASE_URL; ?>/razas" class="nav-link submenu-toggle">
+                        <div class="nav-icon">
+                            <i class="fas fa-paw"></i>
+                        </div>
+                        <span class="nav-text">Razas</span>
+                        <div class="nav-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="nav-indicator"></div>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item <?php echo (preg_match('#/razas(/[0-9]+)?$#', $_SERVER['REQUEST_URI'])) ? 'active' : ''; ?>">
+                            <a href="<?php echo BASE_URL; ?>/razas" class="submenu-link">
+                                <div class="submenu-icon">
+                                    <i class="fas fa-list-ul"></i>
+                                </div>
+                                <span class="submenu-text">Listado</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/razas/create') !== false) ? 'active' : ''; ?>">
+                            <a href="<?php echo BASE_URL; ?>/razas/create" class="submenu-link">
+                                <div class="submenu-icon">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <span class="submenu-text">Nueva Raza</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
-              <!-- Menú Razas COMPLETO -->
-<li class="nav-item has-submenu <?php echo (strpos($_SERVER['REQUEST_URI'], '/razas') !== false) ? 'active expanded' : ''; ?>">
-    <a href="<?php echo BASE_URL; ?>/razas" class="nav-link">
-        <div class="nav-icon">
-            <i class="fas fa-paw"></i>
-        </div>
-        <span class="nav-text">Razas</span>
-        <div class="nav-arrow">
-            <i class="fas fa-chevron-right"></i>
-        </div>
-        <div class="nav-indicator"></div>
-    </a>
-    <ul class="submenu">
-        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/razas/create') !== false) ? 'active' : ''; ?>">
-            <a href="<?php echo BASE_URL; ?>/razas/create" class="submenu-link">
-                <div class="submenu-icon">
-                    <i class="fas fa-plus"></i>
-                </div>
-                <span class="submenu-text">Nueva Raza</span>
-            </a>
-        </li>
-        <li class="submenu-item <?php echo (preg_match('#/razas(/[0-9]+)?$#', $_SERVER['REQUEST_URI'])) ? 'active' : ''; ?>">
-            <a href="<?php echo BASE_URL; ?>/razas" class="submenu-link">
-                <div class="submenu-icon">
-                    <i class="fas fa-list-ul"></i>
-                </div>
-                <span class="submenu-text">Listado</span>
-            </a>
-        </li>
-    </ul>
-</li>
-    <!-- Menú propietarios COMPLETO -->
-<li class="nav-item has-submenu <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios') !== false) ? 'active expanded' : ''; ?>">
-    <a href="<?php echo BASE_URL; ?>/propietarios" class="nav-link">
-        <div class="nav-icon"><i class="fas fa-user-friends"></i></div>
-        <span class="nav-text">Propietarios</span>
-        <div class="nav-arrow"><i class="fas fa-chevron-right"></i></div>
-        <div class="nav-indicator"></div>
-    </a>
-    <ul class="submenu">
-        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios/create') !== false) ? 'active' : ''; ?>">
-            <a href="<?php echo BASE_URL; ?>/propietarios/create" class="submenu-link">
-                <div class="submenu-icon"><i class="fas fa-plus"></i></div>
-                <span class="submenu-text">Nuevo Propietario</span>
-            </a>
-        </li>
-        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios') !== false && !strpos($_SERVER['REQUEST_URI'], '/create')) ? 'active' : ''; ?>">
-            <a href="<?php echo BASE_URL; ?>/propietarios" class="submenu-link">
-                <div class="submenu-icon"><i class="fas fa-list-ul"></i></div>
-                <span class="submenu-text">Listado</span>
-            </a>
-        </li>
-    </ul>
-</li>
-
-
-          
+                <!-- Menú propietarios COMPLETO -->
+                <li class="nav-item has-submenu <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios') !== false) ? 'active expanded' : ''; ?>">
+                    <a href="<?php echo BASE_URL; ?>/propietarios" class="nav-link submenu-toggle">
+                        <div class="nav-icon"><i class="fas fa-user-friends"></i></div>
+                        <span class="nav-text">Propietarios</span>
+                        <div class="nav-arrow"><i class="fas fa-chevron-right"></i></div>
+                        <div class="nav-indicator"></div>
+                    </a>
+                    <ul class="submenu">
+                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios') !== false && !strpos($_SERVER['REQUEST_URI'], '/create')) ? 'active' : ''; ?>">
+                            <a href="<?php echo BASE_URL; ?>/propietarios" class="submenu-link">
+                                <div class="submenu-icon"><i class="fas fa-list-ul"></i></div>
+                                <span class="submenu-text">Listado</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/propietarios/create') !== false) ? 'active' : ''; ?>">
+                            <a href="<?php echo BASE_URL; ?>/propietarios/create" class="submenu-link">
+                                <div class="submenu-icon"><i class="fas fa-plus"></i></div>
+                                <span class="submenu-text">Nuevo Propietario</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </div>
 
@@ -127,7 +136,7 @@
             <h4 class="nav-title">Cuenta</h4>
             <ul class="nav-list">
                 <li class="nav-item has-submenu <?php echo (strpos($_SERVER['REQUEST_URI'], '/profile') !== false) ? 'active expanded' : ''; ?>">
-                    <a href="<?php echo BASE_URL; ?>/profile" class="nav-link">
+                    <a href="<?php echo BASE_URL; ?>/profile" class="nav-link submenu-toggle">
                         <div class="nav-icon">
                             <i class="fas fa-user-circle"></i>
                         </div>
@@ -138,6 +147,14 @@
                         <div class="nav-indicator"></div>
                     </a>
                     <ul class="submenu">
+                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/profile') !== false) ? 'active' : ''; ?>">
+                            <a href="<?php echo BASE_URL; ?>/profile" class="submenu-link">
+                                <div class="submenu-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <span class="submenu-text">Perfil</span>
+                            </a>
+                        </li>
                         <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/profile/edit') !== false) ? 'active' : ''; ?>">
                             <a href="<?php echo BASE_URL; ?>/profile/edit" class="submenu-link">
                                 <div class="submenu-icon">
@@ -152,14 +169,6 @@
                                     <i class="fas fa-shield-alt"></i>
                                 </div>
                                 <span class="submenu-text">Seguridad</span>
-                            </a>
-                        </li>
-                        <li class="submenu-item <?php echo (strpos($_SERVER['REQUEST_URI'], '/profile') !== false) ? 'active' : ''; ?>">
-                            <a href="<?php echo BASE_URL; ?>/profile" class="submenu-link">
-                                <div class="submenu-icon">
-                                    <i class="fas fa-shield-alt"></i>
-                                </div>
-                                <span class="submenu-text">perfil</span>
                             </a>
                         </li>
                     </ul>
@@ -185,394 +194,508 @@
 </aside>
 
 <style>
-    .logo-image {
-        width: 240px;
-        /* Puedes ajustar esto según el tamaño ideal */
-        height: 240px;
-        /* O usa 'auto' para mantener proporción */
-        object-fit: contain;
-        border-radius: 8px;
-        /* Opcional, por estética */
-    }
+/* Variables de colores */
+:root {
+  --dark: #260F01;
+  --brown: #583619;
+  --tan: #AC815B;
+  --beige: #DBB593;
+  --cream: #EADFD5;
+  --light: #F2F2F2;
+  --black: #000000;
+  --white: #FFFFFF;
+  --gray: #666666;
+  --light-gray: #999999;
+}
 
-    /* Modern Sidebar Styles */
+/* Estilos base del logo */
+.logo-image {
+    width: 240px;
+    height: 240px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+/* Estilos para el botón hamburguesa */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: var(--cream);
+    border: 2px solid var(--tan);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(38, 15, 1, 0.15);
+    cursor: pointer;
+    flex-direction: column;
+    width: 50px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--beige);
+    border-color: var(--brown);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(38, 15, 1, 0.2);
+}
+
+.hamburger-line {
+    width: 20px;
+    height: 2px;
+    background: var(--dark);
+    margin: 2px 0;
+    transition: all 0.3s ease;
+    border-radius: 1px;
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Botón cerrar en móvil */
+.mobile-close-btn {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--gray);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.mobile-close-btn:hover {
+    background: var(--cream);
+    color: var(--dark);
+}
+
+/* Overlay para móvil */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(38, 15, 1, 0.6);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Estilos responsive */
+@media (max-width: 768px) {
+    /* Mostrar botón hamburguesa */
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
+    /* Mostrar botón cerrar */
+    .mobile-close-btn {
+        display: block;
+    }
+    
+    /* Mostrar overlay */
+    .sidebar-overlay {
+        display: block;
+    }
+    
+    /* Sidebar móvil */
     .sidebar {
+        position: fixed !important;
+        top: 0;
+        left: -100%;
         width: 280px;
         height: 100vh;
-        background: #260F01;
-        border-right: 1px solid rgba(168, 106, 46, 0.2);
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        left: 0;
-        top: 0;
         z-index: 1000;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        backdrop-filter: blur(20px);
-        box-shadow: 0 20px 25px -5px rgba(50, 34, 18, 0.15), 0 10px 10px -5px rgba(50, 34, 18, 0.08);
-    }
-
-    /* Header */
-    .sidebar-header {
-        padding: 24px 20px;
-        border-bottom: 1px solid rgba(244, 241, 225, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .logo-container {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .logo-icon {
-        width: 240px;
-        height: 240px;
-        background: #F2F2F2;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #322212;
-        font-size: 18px;
-        box-shadow: 0 4px 12px rgba(242, 197, 95, 0.3);
-    }
-
-    .site-title {
-        color: #F4F1E1;
-        font-size: 20px;
-        font-weight: 700;
-        margin: 0;
-        letter-spacing: -0.025em;
-    }
-
-
-    /* User Card */
-    .user-card {
-        padding: 20px;
-        margin: 0 16px 24px;
-        background: rgba(244, 241, 225, 0.1);
-        border: 1px solid rgba(244, 241, 225, 0.15);
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        backdrop-filter: blur(10px);
-    }
-
-
-    .action-btn {
-        width: 28px;
-        height: 28px;
-        border: none;
-        background: rgba(244, 241, 225, 0.15);
-        color: rgba(244, 241, 225, 0.8);
-        border-radius: 6px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-    }
-
-    .action-btn:hover {
-        background: #F2C55F;
-        color: #322212;
-    }
-
-    /* Navigation */
-    .sidebar-nav {
-        flex: 1;
-        padding: 0 16px;
+        transition: left 0.3s ease;
         overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(244, 241, 225, 0.3) transparent;
+        box-shadow: 4px 0 20px rgba(38, 15, 1, 0.15);
+        background: var(--white);
+        border-right: 3px solid var(--tan);
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
     }
-
-    .sidebar-nav::-webkit-scrollbar {
-        width: 4px;
+    
+    .sidebar.active {
+        left: 0 !important;
     }
-
-    .sidebar-nav::-webkit-scrollbar-track {
-        background: transparent;
+    
+    /* Ajustar header del sidebar */
+    .sidebar-header {
+        display: flex;
+        justify-content: center;
+        position: center;
+        padding: 20px;
+        border-bottom: 2px solid var(--cream);
+        background: linear-gradient(135deg, var(--cream) 0%, var(--beige) 100%);
     }
-
-    .sidebar-nav::-webkit-scrollbar-thumb {
-        background: rgba(244, 241, 225, 0.3);
-        border-radius: 2px;
+    
+    /* Ajustar logo para móvil */
+    .logo-image {
+        width: 200px !important;
+        height: 200px !important;
+        border: 2px solid var(--tan);
+        border-radius: 12px;
     }
-
+    
+    /* Ajustar navegación */
+    .sidebar-nav {
+    
+        padding: 20px 0;
+        background: var(--white);
+    }
+    
     .nav-section {
-        margin-bottom: 32px;
+      
+        margin-bottom: 30px;
     }
-
+    
     .nav-title {
-        color: rgba(244, 241, 225, 0.6);
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin: 0 0 12px 16px;
+        color: var(--brown);
+        margin-bottom: 15px;
+        padding: 0 20px;
+        letter-spacing: 1px;
     }
-
-    .nav-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
+    
     .nav-item {
-        margin-bottom: 4px;
-        position: relative;
+        margin-bottom: 5px;
     }
-
+    
     .nav-link {
+        padding: 15px 20px;
         display: flex;
         align-items: center;
-        padding: 12px 16px;
-        color: rgba(244, 241, 225, 0.8);
         text-decoration: none;
-        border-radius: 12px;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        color: var(--dark);
         position: relative;
-        overflow: hidden;
+        transition: all 0.3s ease;
+        border-left: 4px solid transparent;
     }
-
+    
     .nav-link:hover {
-        background: rgba(244, 241, 225, 0.1);
-        color: #F2C55F;
-        transform: translateX(4px);
+        background: var(--cream);
+        color: var(--brown);
+        border-left-color: var(--tan);
     }
-
-    .nav-item.active .nav-link {
-        background: rgba(242, 197, 95, 0.15);
-        color: #F2C55F;
-        border: 1px solid rgba(242, 197, 95, 0.3);
-        box-shadow: 0 2px 8px rgba(242, 197, 95, 0.2);
-    }
-
+    
     .nav-icon {
         width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 12px;
-        font-size: 16px;
+        margin-right: 15px;
+        text-align: center;
+        color: var(--tan);
     }
-
+    
     .nav-text {
         flex: 1;
-        font-weight: 500;
         font-size: 14px;
+        font-weight: 500;
     }
-
+    
     .nav-arrow {
-        margin-left: auto;
-        transition: transform 0.2s ease;
-        font-size: 12px;
-        opacity: 0.7;
+        width: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+        color: var(--gray);
     }
-
-    .nav-item.expanded .nav-arrow {
-        transform: rotate(90deg);
-    }
-
-    .nav-indicator {
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 0;
-        background: linear-gradient(135deg, #F2C55F, #885926);
-        border-radius: 0 2px 2px 0;
-        transition: height 0.2s ease;
-    }
-
-    .nav-item.active .nav-indicator {
-        height: 20px;
-    }
-
-    /* Submenu */
+    
+    /* Submenús */
     .submenu {
-        list-style: none;
-        padding: 0;
-        margin: 8px 0 0 0;
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: none;
+        background: var(--light);
+        padding: 8px 0;
+        margin: 5px 0;
+        border-left: 4px solid var(--beige);
+        border-radius: 0 8px 8px 0;
     }
-
-    .nav-item.expanded .submenu {
-        max-height: 200px;
+    
+    .submenu.active {
+        display: block;
     }
-
-    .submenu-item {
-        margin-bottom: 2px;
-    }
-
+    
     .submenu-link {
+        padding: 12px 20px 12px 52px;
         display: flex;
         align-items: center;
-        padding: 8px 16px 8px 48px;
-        color: rgba(244, 241, 225, 0.7);
         text-decoration: none;
-        border-radius: 8px;
-        transition: all 0.2s ease;
+        color: var(--gray);
         font-size: 13px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
     }
-
+    
     .submenu-link:hover {
-        background: rgba(244, 241, 225, 0.08);
-        color: #F2C55F;
-        transform: translateX(4px);
+        background: var(--cream);
+        color: var(--dark);
+        border-left-color: var(--tan);
     }
-
-    .submenu-item.active .submenu-link {
-        background: rgba(242, 197, 95, 0.1);
-        color: #F2C55F;
-    }
-
+    
     .submenu-icon {
         width: 16px;
-        height: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 8px;
-        font-size: 12px;
+        margin-right: 10px;
+        text-align: center;
+        color: var(--tan);
     }
-
-    .submenu-text {
-        font-weight: 500;
+    
+    /* Estados activos */
+    .nav-item.active > .nav-link {
+        background: linear-gradient(135deg, var(--brown) 0%, var(--dark) 100%);
+        color: var(--white);
+        border-left-color: var(--tan);
     }
-
-    /* Footer */
+    
+    .nav-item.active .nav-icon {
+        color: var(--beige);
+    }
+    
+    .nav-item.active .nav-arrow {
+        transform: rotate(90deg);
+        color: var(--beige);
+    }
+    
+    .submenu-item.active .submenu-link {
+        background: linear-gradient(135deg, var(--tan) 0%, var(--brown) 100%);
+        color: var(--white);
+        border-left-color: var(--cream);
+    }
+    
+    .submenu-item.active .submenu-icon {
+        color: var(--cream);
+    }
+    
+    /* Footer del sidebar */
     .sidebar-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, var(--cream) 0%, var(--beige) 100%);
+        border-top: 2px solid var(--tan);
         padding: 20px;
-        border-top: 1px solid rgba(244, 241, 225, 0.15);
-        margin-top: auto;
     }
-
-    .logout-section {
-        margin-bottom: 16px;
-    }
-
+    
     .logout-btn {
         display: flex;
         align-items: center;
-        padding: 12px 16px;
-        color: rgba(244, 241, 225, 0.8);
         text-decoration: none;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-        border: 1px solid rgba(168, 106, 46, 0.3);
-        background: rgba(168, 106, 46, 0.1);
+        color: var(--dark);
+        padding: 12px 0;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        padding-left: 10px;
     }
-
+    
     .logout-btn:hover {
-        background: #885926;
-        color: #F4F1E1;
-        border-color: #885926;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(136, 89, 38, 0.3);
+        background: var(--white);
+        color: var(--brown);
+        transform: translateX(5px);
     }
-
+    
     .logout-icon {
-        width: 18px;
-        height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 20px;
         margin-right: 10px;
-        font-size: 14px;
-    }
-
-    .logout-text {
-        font-weight: 500;
-        font-size: 14px;
-    }
-
-    .footer-info {
         text-align: center;
+        color: var(--brown);
     }
-
-    .copyright {
-        color: rgba(244, 241, 225, 0.5);
-        font-size: 11px;
-        margin: 0 0 4px 0;
+    
+    .footer-info {
+        margin-top: 15px;
+        text-align: center;
+        background: var(--white);
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid var(--tan);
     }
-
+    
+    .copyright,
     .version {
-        color: rgba(244, 241, 225, 0.4);
-        font-size: 10px;
-        margin: 0;
+        font-size: 11px;
+        color: var(--gray);
+        margin: 2px 0;
         font-weight: 500;
     }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .sidebar {
-            transform: translateX(-100%);
-        }
-
-        .sidebar.open {
-            transform: translateX(0);
-        }
+    
+    .version {
+        color: var(--brown);
+        font-weight: 600;
     }
+}
 
-    /* Animation for submenu toggle */
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .sidebar {
+        width: 100%;
+        left: -100%;
+        border-right: none;
+        border-bottom: 3px solid var(--tan);
     }
-
-    .nav-item.expanded .submenu {
-        animation: slideDown 0.3s ease;
+    
+    .mobile-menu-toggle {
+        top: 15px;
+        left: 15px;
+        width: 45px;
+        height: 45px;
+        background: var(--beige);
+        border-color: var(--brown);
     }
+    
+    .mobile-menu-toggle:hover {
+        background: var(--tan);
+    }
+    
+    .hamburger-line {
+        width: 18px;
+        background: var(--dark);
+    }
+    
+    .sidebar-header {
+        text-align: center;
+        background: linear-gradient(135deg, var(--beige) 0%, var(--tan) 100%);
+    }
+    
+    .logo-image {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* Animaciones adicionales */
+.sidebar {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.sidebar-overlay {
+    will-change: opacity;
+    backface-visibility: hidden;
+}
+
+
 </style>
 
 <script>
-    // JavaScript para funcionalidad del sidebar
-    document.addEventListener('DOMContentLoaded', function() {
-        // Toggle submenu functionality
-        const navItems = document.querySelectorAll('.nav-item.has-submenu');
-
-        navItems.forEach(item => {
-            const link = item.querySelector('.nav-link');
-
-            link.addEventListener('click', function(e) {
-                // Solo prevenir el comportamiento por defecto si no es el enlace activo
-                if (!item.classList.contains('active')) {
-                    e.preventDefault();
-                }
-
-                // Toggle expanded state
-                item.classList.toggle('expanded');
-
-                // Close other expanded items
-                navItems.forEach(otherItem => {
-                    if (otherItem !== item) {
-                        otherItem.classList.remove('expanded');
-                    }
-                });
-            });
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileCloseBtn = document.getElementById('mobileCloseBtn');
+    const sidebar = document.getElementById('mainSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const submenuToggles = document.querySelectorAll('.submenu-toggle');
+    
+    // Verificar que los elementos existen
+    if (!mobileMenuToggle || !sidebar || !overlay) {
+        console.error('Elementos del sidebar no encontrados');
+        return;
+    }
+    
+    // Función para abrir sidebar
+    function openSidebar() {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        mobileMenuToggle.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // Función para cerrar sidebar
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        mobileMenuToggle.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Event listeners
+    mobileMenuToggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (sidebar.classList.contains('active')) {
+            closeSidebar();
+        } else {
+            openSidebar();
+        }
+    });
+    
+    if (mobileCloseBtn) {
+        mobileCloseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeSidebar();
         });
-
-        // Auto-expand active menu items
-        const activeItems = document.querySelectorAll('.nav-item.active.has-submenu');
-        activeItems.forEach(item => {
-            item.classList.add('expanded');
+    }
+    
+    overlay.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSidebar();
+    });
+    
+    // Manejar submenús
+    submenuToggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const parent = this.parentElement;
+                const submenu = parent.querySelector('.submenu');
+                
+                if (submenu) {
+                    parent.classList.toggle('expanded');
+                    submenu.classList.toggle('active');
+                }
+            }
         });
     });
+    
+    // Cerrar sidebar al hacer clic en un enlace (móvil)
+    const navLinks = document.querySelectorAll('.nav-link:not(.submenu-toggle), .submenu-link');
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                setTimeout(closeSidebar, 100);
+            }
+        });
+    });
+    
+    // Manejar redimensionamiento de ventana
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            closeSidebar();
+        }
+    });
+    
+    // Prevenir cierre accidental
+    sidebar.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+});
 </script>

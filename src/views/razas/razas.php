@@ -38,12 +38,12 @@
                             </div>
                             
                             <div class="raza-actions">
-                                <a href="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>" class="btn btn-sm btn-info">👁️ Ver</a>
-                                <a href="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>/edit" class="btn btn-sm btn-warning">✏️ Editar</a>
+                                <a href="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>" class="btn btn-sm btn-info"> Ver</a>
+                                <a href="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>/edit" class="btn btn-sm btn-warning"> Editar</a>
                                 <form method="POST" action="<?= BASE_URL ?>/razas/<?= $raza['id_raza'] ?>/delete" 
                                       onsubmit="return confirm('¿Eliminar esta raza?')">
                                     <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                                    <button type="submit" class="btn btn-sm btn-danger"> Eliminar</button>
                                 </form>
                             </div>
                         </div>

@@ -16,11 +16,13 @@ $csrf_token = $_SESSION['csrf_token'];
 <body>
   <?php include __DIR__ . '/../../../includes/sidebar.php'; ?>
     <div class="container">
-          
         <header class="dashboard-header">
+            <h1>🐐 Registrar Nueva Cabra</h1>
+        </header>
+        <header class="form-container">
             
             
-        <main class="main-content"><h1>🐐 Registrar Nueva Cabra</h1>
+        
             <!-- Mensajes de error -->
             <?php if (isset($_SESSION['errors']) && !empty($_SESSION['errors'])): ?>
                 <div class="alert alert-error">
@@ -41,7 +43,7 @@ $csrf_token = $_SESSION['csrf_token'];
             <?php endif; ?>
 
             <!-- Formulario de registro -->
-            <div class="form-container">
+            <div >
                 <form method="POST" action="<?php echo BASE_URL; ?>/cabras/create" enctype="multipart/form-data" class="cabra-form">
                       <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <div class="form-sections">
@@ -227,102 +229,8 @@ $csrf_token = $_SESSION['csrf_token'];
     </script>
 
     <style>
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
 
-        .cabra-form {
-            padding: 30px;
-        }
 
-        .form-sections {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .form-section {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 20px;
-            background: #fafafa;
-        }
-
-        .form-section h3 {
-            margin: 0 0 20px 0;
-            color: #333;
-            font-size: 1.2em;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 10px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
-        }
-
-        .form-help {
-            display: block;
-            margin-top: 5px;
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-container {
-                margin: 10px;
-            }
-            
-            .cabra-form {
-                padding: 20px;
-            }
-        }
     </style>
 
     <?php 

@@ -64,11 +64,11 @@ class AuthController {
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        if (empty($email) || empty($password)) {
-            $_SESSION['error'] = "Email y contraseña son requeridos";
-            $this->safeRedirect(BASE_URL . "/login");
-            return;
-        }
+if (empty($email) || empty($password)) {
+    $error = "Email y contraseña son requeridos";
+    include __DIR__ . '/../views/auth/login.php';
+    return;
+}
 
         $user = new User();
         $user->email = $email;
@@ -81,8 +81,9 @@ class AuthController {
 
             $this->safeRedirect(BASE_URL . "/dashboard");
         } else {
-            $_SESSION['error'] = "Email o contraseña incorrectos";
-            $this->safeRedirect(BASE_URL . "/login");
+           $error = "Email o contraseña incorrectos";
+include __DIR__ . '/../views/auth/login.php';
+
         }
     }
 

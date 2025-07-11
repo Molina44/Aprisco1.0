@@ -412,6 +412,8 @@ public function edit() {
     
     $this->redirectToCabras();
 }
+
+
     
     // Buscar cabras
     public function search() {
@@ -422,7 +424,8 @@ public function edit() {
             exit();
         }
         
-        $cabras = $this->cabra->search($term);
+     $cabras = $this->cabra->search($term);
+    if (!is_array($cabras)) $cabras = [];
         
         $data = [
             'cabras' => $cabras,

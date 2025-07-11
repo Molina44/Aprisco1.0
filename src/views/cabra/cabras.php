@@ -12,12 +12,9 @@
     <?php include __DIR__ . '/../../../includes/sidebar.php'; ?>
     <div class="container">
         <header class="dashboard-header">
-            <h1>🐐 Gestión de Cabras</h1>
-            <nav>
-                <a href="<?php echo BASE_URL; ?>/dashboard" class="btn btn-secondary">Dashboard</a>
-                <a href="<?php echo BASE_URL; ?>/profile" class="btn btn-secondary">Perfil</a>
+            <h1>🐐 Gestión de Cabras</h1>  
+               <!-- Barra de acciones -->
 
-            </nav>
         </header>
 
         <main class="main-content">
@@ -36,16 +33,7 @@
                 </div>
             <?php endif; ?>
 
-            <!-- Barra de acciones -->
-            <div class="actions-bar">
-                <div class="actions-right">
-                    <form method="GET" action="<?php echo BASE_URL; ?>/cabras/search" class="search-form">
-                        <input type="text" name="term" placeholder="Buscar cabras..."
-                            value="<?php echo isset($_GET['term']) ? e($_GET['term']) : ''; ?>">
-                        <button type="submit" class="btn btn-secondary">🔍</button>
-                    </form>
-                </div>
-            </div>
+       
 
             <!-- Estadísticas rápidas -->
             <div class="stats-summary">
@@ -108,9 +96,9 @@
 
                             <div class="cabra-actions">
                                 <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>"
-                                    class="btn btn-sm btn-info">👁️ Ver</a>
+                                    class="btn btn-sm btn-info">Ver</a>
                                 <a href="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/edit"
-                                    class="btn btn-sm btn-warning">✏️ Editar</a>
+                                    class="btn btn-sm btn-warning"> Editar</a>
 
                                 <!-- Formulario inline para eliminación con confirmación JS -->
                                 <form method="POST" action="<?php echo BASE_URL; ?>/cabras/<?php echo $cabra['id_cabra']; ?>/delete"
@@ -118,7 +106,7 @@
                                     onsubmit="return confirm('¿Estás seguro de eliminar la cabra <?php echo e($cabra['nombre']); ?>? Esta acción la marcará como INACTIVA.')">
                                     <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                     <input type="hidden" name="id" value="<?php echo $cabra['id_cabra']; ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">🗑️ Eliminar</button>
+                                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
                                 </form>
                             </div>
                         </div>
@@ -159,158 +147,6 @@
             <?php endif; ?>
         </main>
     </div>
-
-    <style>
-        .cabras-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .cabra-card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-
-        .cabra-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .cabra-photo {
-            height: 200px;
-            background: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cabra-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .no-photo {
-            font-size: 60px;
-            color: #ccc;
-        }
-
-        .cabra-info {
-            padding: 15px;
-        }
-
-        .cabra-info h3 {
-            margin: 0 0 10px 0;
-            color: #333;
-        }
-
-        .sex-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-
-        .sex-badge.macho {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .sex-badge.hembra {
-            background: #fce4ec;
-            color: #c2185b;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-
-        .status-badge.activa {
-            background: #e8f5e8;
-            color: #2e7d32;
-        }
-
-        .status-badge.inactiva {
-            background: #ffebee;
-            color: #d32f2f;
-        }
-
-        .cabra-actions {
-            padding: 15px;
-            background: #f9f9f9;
-            display: flex;
-            gap: 10px;
-            justify-content: space-between;
-        }
-
-        .actions-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .search-form {
-            display: flex;
-            gap: 10px;
-        }
-
-        .search-form input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .stats-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-card h3 {
-            margin: 0;
-            font-size: 2em;
-            color: #4CAF50;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            background: white;
-            border-radius: 10px;
-            grid-column: 1 / -1;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 30px 0;
-        }
-
-        .pagination .current {
-            background: #4CAF50;
-            color: white;
-        }
-    </style>
 </body>
 
 </html>
