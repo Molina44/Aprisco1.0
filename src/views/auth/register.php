@@ -52,12 +52,12 @@
                     <small>Mínimo <?php echo PASSWORD_MIN_LENGTH; ?> caracteres</small>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Registrarse</button>
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            
+                
             </form>
-
-            <p class="auth-link">
-                ¿Ya tienes cuenta? <a href="<?php echo BASE_URL; ?>/login">Iniciar sesión</a>
-            </p>
+            <button type="submit"><a href="<?php echo BASE_URL; ?>/dashboard"  class="btn btn-primary">volver</a></button>
+            
         </div>
     </div>
     

@@ -370,7 +370,6 @@
     }
     
     .nav-section {
-      
         margin-bottom: 30px;
     }
     

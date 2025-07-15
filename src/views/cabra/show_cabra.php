@@ -206,7 +206,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
                 </div>
             </div>
         </div>
-
+<?php if ($cabra['sexo'] === 'HEMBRA'): ?>
         <!-- Sección adicional: Historial de Partos -->
         <div class="info-group">
             <h3>👶 Historial de Partos</h3>
@@ -286,7 +286,7 @@ $documentos_cabra = $documentosModel->getByCabra($cabra['id_cabra']);
                 <p class="text-muted">No hay eventos registrados.</p>
             <?php endif; ?>
         </div>
-
+<?php endif; ?>
 
 
         <!-- Sección adicional: Controles Sanitarios -->

@@ -31,7 +31,7 @@ class AuthController {
 
         if (empty($errors)) {
             if ($user->register()) {
-                $_SESSION['success'] = "Usuario registrado exitosamente. Puedes iniciar sesión.";
+                $_SESSION['success'] = "Usuario registrado exitosamente.";
                 $this->safeRedirect(BASE_URL . "/login");
                 return;
             } else {

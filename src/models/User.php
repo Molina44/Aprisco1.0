@@ -21,32 +21,31 @@ class User {
     }
 
     // Registrar nuevo usuario
-    public function register() {
-        $query = "INSERT INTO " . $this->table_name . " 
-                  (nombre, email, password, telefono) 
-                  VALUES (:nombre, :email, :password, :telefono)";
+public function register() {
+    $query = "INSERT INTO " . $this->table_name . " 
+              (nombre, email, password, telefono) 
+              VALUES (:nombre, :email, :password, :telefono)";
 
-        $stmt = $this->conn->prepare($query);
+    $stmt = $this->conn->prepare($query);
 
-        // Sanitizar datos
-        $this->nombre = htmlspecialchars(strip_tags($this->nombre));
-        $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->telefono = htmlspecialchars(strip_tags($this->telefono));
+    // Sanitizar
+    $this->nombre = htmlspecialchars(strip_tags($this->nombre));
+    $this->email = htmlspecialchars(strip_tags($this->email));
+    $this->telefono = htmlspecialchars(strip_tags($this->telefono));
+    $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
 
-        // Encriptar contraseña
-        $password_hash = password_hash($this->password, PASSWORD_DEFAULT);
+    // Bind
+    $stmt->bindParam(":nombre", $this->nombre);
+    $stmt->bindParam(":email", $this->email);
+    $stmt->bindParam(":password", $password_hash);
+    $stmt->bindParam(":telefono", $this->telefono);
+if ($stmt->execute()) {
+    $this->id = $this->conn->lastInsertId(); // ✅ Necesario para iniciar sesión
+    return true;
+}
 
-        // Bind parameters
-        $stmt->bindParam(":nombre", $this->nombre);
-        $stmt->bindParam(":email", $this->email);
-        $stmt->bindParam(":password", $password_hash);
-        $stmt->bindParam(":telefono", $this->telefono);
-
-        if ($stmt->execute()) {
-            return true;
-        }
-        return false;
-    }
+    return false;
+}
 
     // Verificar si el email ya existe
     public function emailExists() {

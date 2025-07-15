@@ -45,7 +45,17 @@
                             <a href="<?php echo BASE_URL; ?>/cabras" class="btn btn-primary">
                                 📝 Ver Cabras
                             </a>
+                        
                         </div>
+                         <div class="card">
+                            <h3>usuarios</h3>
+                            <p>crea usuarios</p>
+                            <a href="<?php echo BASE_URL; ?>/register" class="btn btn-primary">
+                                📝 Crear Usuario
+                            </a>
+                        
+                        </div>
+
                     </div>
                 </div>
             </main>

@@ -41,10 +41,6 @@
 
                 <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
             </form>
-
-            <p class="auth-link">
-                ¿No tienes cuenta? <a href="<?php echo BASE_URL; ?>/register">Crear cuenta</a>
-            </p>
         </div>
     </div>
 </body>

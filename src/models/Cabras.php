@@ -356,6 +356,34 @@ public function getAncestros($id, $generation = 1, $maxGenerations = 4) {
         'padre' => $this->getAncestros($cabra['padre'], $generation + 1, $maxGenerations),
     ];
 }
+public function validarParentesco($madreId, $padreId) {
+    if ($madreId) {
+        $stmt = $this->db->prepare("SELECT sexo, estado FROM cabras WHERE id_cabra = :id");
+        $stmt->bindParam(':id', $madreId, PDO::PARAM_INT);
+        $stmt->execute();
+        $madre = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$madre) return "La madre no existe.";
+        if ($madre['sexo'] !== 'HEMBRA') return "La madre debe tener sexo HEMBRA.";
+        if ($madre['estado'] !== 'ACTIVA') return "La madre no está activa.";
+    }
+
+    if ($padreId) {
+        $stmt = $this->db->prepare("SELECT sexo, estado FROM cabras WHERE id_cabra = :id");
+        $stmt->bindParam(':id', $padreId, PDO::PARAM_INT);
+        $stmt->execute();
+        $padre = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$padre) return "El padre no existe.";
+        if ($padre['sexo'] !== 'MACHO') return "El padre debe tener sexo MACHO.";
+        if ($padre['estado'] !== 'ACTIVA') return "El padre no está activo.";
+    }
+
+    if ($madreId && $padreId && $madreId === $padreId) {
+        return "El padre y la madre no pueden ser la misma cabra.";
+    }
+
+    return null;
+}
+
 
 
 }
